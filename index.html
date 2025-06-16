@@ -24,10 +24,32 @@
 .glow-wrapper:hover {
   filter: drop-shadow(0 0 6px #0f0) drop-shadow(0 0 12px #0f0) drop-shadow(0 0 24px limegreen);
 }
+
+#objet {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1rem 2rem;
+  background: #000;
+  color: #fff;
+  font-family: 'Georgia', serif;
+  font-size: 1.5rem;
+  border: 2px solid crimson;
+  cursor: not-allowed;
+  opacity: 1;
+  transition: opacity 0.6s ease, top 0.6s ease, left 0.6s ease;
+}
 </style>
 </head>
 
 <body>
+
+<p id="ghost">Welcome.</p>
+<p id="timer">Time spent here: 0s</p>
+
+<hr>
+
 <pre class="line">
 mfw I impulse bought a domain at 2AM:
 
@@ -94,6 +116,64 @@ Long Shot
 <div class="glow-wrapper">
   <a href="https://sacred-texts.com/eso/pridisc.htm"><img src="sigil.svg" width="400" height="400"></object></a>
 </div>
+
+<div id="objet" class="floating-temptation">objet petit a</div>
+
+<script>
+if (localStorage.getItem("nachträglichkeit") === "true") {
+  document.getElementById("ghost").textContent = "Welcome. You were here. You don't remember, but I do.";
+}
+localStorage.setItem("nachträglichkeit", "true");
+</script>
+
+<script>
+const objet = document.getElementById("objet");
+
+objet.addEventListener("mouseenter", () => {
+  // fade out
+  objet.style.transition = "opacity 0.6s ease";
+  objet.style.opacity = 0;
+
+  setTimeout(() => {
+    // disable transition for move
+    objet.style.transition = "none";
+
+    const rect = objet.getBoundingClientRect();
+    const maxLeft = window.innerWidth - rect.width;
+    const maxTop = window.innerHeight - rect.height;
+
+    const newLeft = Math.random() * maxLeft;
+    const newTop = Math.random() * maxTop;
+
+    objet.style.left = `${newLeft}px`;
+    objet.style.top = `${newTop}px`;
+
+    // force reflow to apply immediate move
+    void objet.offsetWidth;
+
+    // re-enable transition for fade-in
+    objet.style.transition = "opacity 0.6s ease";
+    objet.style.opacity = 1;
+  }, 600); // wait for fade-out to finish
+});
+</script>
+
+<script>
+let entropy = 0;
+const timer = document.getElementById("timer");
+
+setInterval(() => {
+  const rand = Math.random();
+  if (rand < 0.1) entropy -= 1;
+  else if (rand < 0.4) entropy += 2;
+  else entropy += 1;
+  timer.textContent = `Time spent here: ${entropy}s`;
+}, 1000);
+</script>
+
+<script>
+throw new Error("You are the error you came to inspect.");
+</script>
 
 </body>
 </html> 
