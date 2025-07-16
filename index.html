@@ -197,6 +197,35 @@ mfw I impulse bought a domain at 2AM:
 </script>
 
 <script>
+    function stain() {
+        const stainDiv = document.createElement('div');
+
+        // Set basic styles
+        stainDiv.style.position = 'fixed';
+        stainDiv.style.width = '80px';
+        stainDiv.style.height = '80px';
+        stainDiv.style.backgroundColor = getRandomColor(0.4); // alpha = 0.4
+        stainDiv.style.pointerEvents = 'none'; // so it doesn't block interaction
+
+        // Position it randomly
+        const maxLeft = window.innerWidth*0.6 - 40;
+        const maxTop = window.innerHeight - 40;
+        stainDiv.style.left = `${Math.random() * maxLeft}px`;
+        stainDiv.style.top = `${Math.random() * maxTop}px`;
+
+        document.body.appendChild(stainDiv);
+    }
+
+    function getRandomColor(alpha = 1) {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+    stain();
+</script>
+
+<script>
     throw new Error("You are the error you came to inspect.");
 </script>
 
