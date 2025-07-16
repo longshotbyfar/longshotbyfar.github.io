@@ -28,18 +28,16 @@
 
         #objet {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 1rem 2rem;
+            /* REMOVE: top, left, transform */
+            padding: 0.4rem 0.5rem;
             background: #000;
             color: #fff;
             font-family: 'Georgia', serif;
-            font-size: 1.5rem;
+            font-size: 0.50rem;
             border: 2px solid crimson;
             cursor: not-allowed;
             opacity: 1;
-            transition: opacity 0.6s ease, top 0.6s ease, left 0.6s ease;
+            transition: opacity 0.6s ease;
         }
     </style>
 </head>
@@ -147,14 +145,18 @@ mfw I impulse bought a domain at 2AM:
 
 <script>
     const objet = document.getElementById("objet");
+    objet.style.left = "90%";
+    objet.style.top = "5%";
+    let isMoving = false;
 
     objet.addEventListener("mouseenter", () => {
-        // fade out
+        if (isMoving) return;
+        isMoving = true;
+
         objet.style.transition = "opacity 0.6s ease";
-        objet.style.opacity = 0;
+        objet.style.opacity = "0";
 
         setTimeout(() => {
-            // disable transition for move
             objet.style.transition = "none";
 
             const rect = objet.getBoundingClientRect();
@@ -166,13 +168,13 @@ mfw I impulse bought a domain at 2AM:
 
             objet.style.left = `${newLeft}px`;
             objet.style.top = `${newTop}px`;
+            void objet.offsetWidth; // force reflow to apply immediate move
 
-            // force reflow to apply immediate move
-            void objet.offsetWidth;
-
-            // re-enable transition for fade-in
             objet.style.transition = "opacity 0.6s ease";
             objet.style.opacity = 1;
+            setTimeout(() => {
+                isMoving = false;
+            }, 600);
         }, 600); // wait for fade-out to finish
     });
 </script>
