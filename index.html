@@ -49,13 +49,7 @@
 
 <hr>
 
-<pre>
-mfw I impulse bought a domain at 2AM:
-
-(╯°□°）╯︵ ┻━┻      <-- DNS table
-     ↓
-  longshotbyfar.com
-</pre>
+<pre id="table"></pre>
 
 <hr>
 
@@ -64,7 +58,9 @@ mfw I impulse bought a domain at 2AM:
 <hr>
 <p>To whom it may concern,</p>
 <p>
-    According to Article 6(3)d of the Language Equivalency Directive, I do not exist in a valid location.<br>
+    According to Article 6(3)d of the Language Equivalency Directive, 
+    <a href="CON.txt" style="color: inherit; text-decoration: inherit;">I do not exist</a> 
+    in a valid location.<br>
     My fluency was real, but not geolocated.<br>
     My thoughts failed to meet topographic requirements.<br>
     I am therefore unthought.<br>
@@ -119,28 +115,37 @@ mfw I impulse bought a domain at 2AM:
 
 <div id="objet" class="floating-temptation">objet petit a</div>
 
-<script src="whisper/lexicon.js"></script>
-<script src="whisper/verbforms.js"></script>
-<script src="whisper/whispers.js"></script>
-<script>
-    whisperedDiv = document.getElementById('echoes');
-    whisperedDiv.addEventListener('click', function () {
-        while (whisperedDiv.firstChild) whisperedDiv.removeChild(whisperedDiv.firstChild);
-
-        for (let i = 0; i < 10; ++i) {
-            let whisperP = document.createElement('p');
-            whisperP.innerText = whisper();
-            whisperedDiv.appendChild(whisperP);
-        }
-    });
-    whisperedDiv.click();
-</script>
-
 <script>
     if (localStorage.getItem("nachträglichkeit") === "true") {
         document.getElementById("ghost").textContent = "Welcome. You were here. You don't remember, but I do.";
     }
     localStorage.setItem("nachträglichkeit", "true");
+</script>
+
+<script>
+const pre = document.getElementById('table');
+
+const originalText = `mfw I impulse bought a domain at 2AM:
+
+(-°_°)- ┳━┳        <-- DNS table
+    ↓
+  longshotbyfar.com`;
+
+const hoverText = `mfw I impulse bought a domain at 2AM:
+
+(╯°□°)╯︵ ┻━┻      <-- DNS table
+    ↓
+  longshotbyfar.com`;
+
+pre.textContent = originalText;
+
+pre.addEventListener('mouseenter', () => {
+    pre.textContent = hoverText;
+});
+
+pre.addEventListener('mouseleave', () => {
+    pre.textContent = originalText;
+});   
 </script>
 
 <script>
@@ -197,37 +202,85 @@ mfw I impulse bought a domain at 2AM:
 </script>
 
 <script>
-    function stain() {
-        const stainDiv = document.createElement('div');
+function stain() {
+    const stainDiv = document.createElement('div');
 
-        // Set basic styles
-        stainDiv.style.position = 'fixed';
-        stainDiv.style.width = '80px';
-        stainDiv.style.height = '80px';
-        stainDiv.style.backgroundColor = getRandomColor(0.4); // alpha = 0.4
-        stainDiv.style.pointerEvents = 'none'; // so it doesn't block interaction
+    // Base styles
+    stainDiv.style.position = 'fixed';
+    stainDiv.style.width = '80px';
+    stainDiv.style.height = '80px';
+    stainDiv.style.backgroundColor = getRandomColor(0.4);
+    stainDiv.style.pointerEvents = 'none';
 
-        // Position it randomly
-        const maxLeft = window.innerWidth*0.6 - 40;
-        const maxTop = window.innerHeight - 40;
-        stainDiv.style.left = `${Math.random() * maxLeft}px`;
-        stainDiv.style.top = `${Math.random() * maxTop}px`;
+    const maxLeft = window.innerWidth * 0.6 - 40;
+    const maxTop = window.innerHeight - 40;
+    stainDiv.style.left = `${Math.random() * maxLeft}px`;
+    stainDiv.style.top = `${Math.random() * maxTop}px`;
 
-        document.body.appendChild(stainDiv);
+    document.body.appendChild(stainDiv);
+
+    // Animation state
+    let baseSize = 80;
+    let targetScale = 1.05 + Math.random() * 0.1; // 1.05–1.15
+    let speed = 0.002 + Math.random() * 0.003;   // breathing speed
+    let phase = Math.random() * Math.PI * 2;     // starting offset
+    let lastChange = performance.now();
+
+    function animate(time) {
+        const elapsed = time - lastChange;
+
+        // Occasionally change target scale & speed
+        if (elapsed > 2000 + Math.random() * 2000) {
+            targetScale = 1.03 + Math.random() * 0.12;
+            speed = 0.0015 + Math.random() * 0.004;
+            lastChange = time;
+        }
+
+        // Sine-based pulse
+        const scale = 1 + Math.sin(time * speed + phase) * (targetScale - 1);
+        stainDiv.style.transform = `scale(${scale})`;
+
+        requestAnimationFrame(animate);
     }
 
-    function getRandomColor(alpha = 1) {
-        const r = Math.floor(Math.random() * 256);
-        const g = Math.floor(Math.random() * 256);
-        const b = Math.floor(Math.random() * 256);
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    }
+    requestAnimationFrame(animate);
+}
+
+function getRandomColor(alpha = 1) {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+// Example: spawn a few stains
+for (let i = 0; i < 5; i++) {
     stain();
+}
 </script>
 
 <script>
     throw new Error("You are the error you came to inspect.");
 </script>
+
+<script src="whisper/lexicon.js"></script>
+<script src="whisper/verbforms.js"></script>
+<script src="whisper/whispers.js"></script>
+<script>
+    whisperedDiv = document.getElementById('echoes');
+    whisperedDiv.addEventListener('click', function () {
+        while (whisperedDiv.firstChild) whisperedDiv.removeChild(whisperedDiv.firstChild);
+
+        for (let i = 0; i < 10; ++i) {
+            let whisperP = document.createElement('p');
+            whisperP.innerText = whisper();
+            whisperedDiv.appendChild(whisperP);
+        }
+    });
+    whisperedDiv.click();
+</script>
+
+
 
 </body>
 </html>
