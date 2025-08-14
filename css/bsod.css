@@ -1,0 +1,49 @@
+/* Old-school BSOD */
+.bsod {
+    position: fixed; inset: 0; z-index: 2147483647;
+    background: #001a4d; color: #fff;
+    font: 14px/1.3 ui-monospace, Menlo, Consolas, monospace;
+    display: none;
+    pointer-events: none;          /* enable only when shown */
+    user-select: none;
+}
+.bsod.show { display: block; pointer-events: all; }
+
+.bsod .wrap {
+    max-width: 80ch; margin: 8vh auto 0; padding: 0 16px;
+}
+
+.bsod h1 {
+    margin: 0 0 1rem 0; font-weight: 700; font-size: 18px;
+}
+
+.bsod pre, .bsod p { margin: 0 0 .9rem 0; white-space: pre-wrap; }
+
+.bsod .bar {
+    height: 10px; border: 1px solid #9cf; margin: 10px 0 16px 0; background: rgba(255,255,255,.12);
+    position: relative;
+}
+.bsod .bar > i {
+    display: block; height: 100%; width: 0%;
+    background: #9cf;
+}
+
+.bsod .hint {
+    color: #9cf; opacity: .85;
+}
+
+/* light scanlines to sell the CRT vibe */
+.bsod::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+            repeating-linear-gradient(0deg, rgba(255,255,255,.04), rgba(255,255,255,.04) 2px,
+            rgba(0,0,0,.0) 2px, rgba(0,0,0,.0) 4px);
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+}
+
+/* respect users who dislike motion */
+@media (prefers-reduced-motion: reduce) {
+    .bsod::before { display: none; }
+}

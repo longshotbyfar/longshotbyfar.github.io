@@ -5,6 +5,8 @@ import { wireObjet } from './objet.js';
 import { wireAsciiFlip } from './tableHover.js';
 import { startEntropyTimer } from './entropyTimer.js';
 import { initWhispers } from './whisper/init.js';
+import {wireRecordingFavicon} from "./cameraFavicon.js";
+import {wireBSOD} from "./bsod.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     // Memory easter egg
@@ -17,14 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
     startEntropyTimer(qs('#timer'));
     wireObjet(qs('#objet'));
     spawnStains(5);
+    wireBSOD({ oncePerVisit: true });
+    const rec = wireRecordingFavicon({ blinkMs: 600 });
 
-    // Click-to-static (gentle, with fade-out baked in)
-    qs('#static').addEventListener('click', () => {
-            playStatic({ duration: 2.5, fadeOut: 1.0, level: 0.05 });
-            console.log("stat")
-    });
+    qs('#static').addEventListener('click', () =>
+            playStatic({ duration: 2.5, fadeOut: 1.0, level: 0.05 })
+    );
 
-    // Whispers after assets load
-    const echoes = qs('#echoes');
-    if (echoes) initWhispers(echoes);
+    const whispersContainer = qs('#whispers');
+    if (whispersContainer) initWhispers(whispersContainer);
+
+    console.error("you are the error you came to inspect");
 });
+1
