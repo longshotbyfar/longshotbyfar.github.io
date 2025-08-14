@@ -3,6 +3,7 @@ import esbuild from 'esbuild';
 import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { minify as minifyHTML } from 'html-minifier-terser';
+import { copyFile, cp } from 'fs/promises';
 
 const SRC  = 'src';
 const DIST = 'dist';
@@ -124,6 +125,13 @@ const min = await minifyHTML(html, {
         format: { comments: false }
     }
 });
+
+try {
+    await cp(join(SRC, 'assets'), join(DIST, 'assets'), { recursive: true });
+    console.log('📂 Copied assets/');
+} catch {
+    console.warn('⚠ No assets folder found, skipping');
+}
 
 await writeFile(join(DIST, 'index.html'), min, 'utf8');
 
