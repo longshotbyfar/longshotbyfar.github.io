@@ -1,0 +1,35 @@
+.blur-lines p {
+    filter: blur(2px);
+    transition: filter 1s ease;
+    margin: 0;
+}
+.blur-lines p:hover {
+    filter: none;
+}
+
+.glow-wrapper {
+    display: inline-block;
+    filter: none;
+    transition: filter 0.2s ease;
+}
+.glow-wrapper:hover {
+    filter:
+            drop-shadow(0 0 6px #0f0)
+            drop-shadow(0 0 12px #0f0)
+            drop-shadow(0 0 24px limegreen);
+}
+
+#objet {
+    position: absolute;
+    padding: 0.4rem 0.5rem;
+    background: #000;
+    color: #fff;
+    font-family: 'Georgia', serif;
+    font-size: 0.50rem;
+    border: 2px solid crimson;
+    cursor: not-allowed;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+    left: 90%;
+    top: 5%;
+}

@@ -1,65 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8" />
     <title>long shot... by far</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-
-    <style>
-        .blur-lines p {
-            filter: blur(2px);
-            transition: filter 1s ease;
-            margin: 0;
-        }
-
-        .blur-lines p:hover {
-            filter: none;
-        }
-
-        .glow-wrapper {
-            display: inline-block;
-            filter: none;
-            transition: filter 0.2s ease;
-        }
-
-        .glow-wrapper:hover {
-            filter: drop-shadow(0 0 6px #0f0) drop-shadow(0 0 12px #0f0) drop-shadow(0 0 24px limegreen);
-        }
-
-        #objet {
-            position: absolute;
-            /* REMOVE: top, left, transform */
-            padding: 0.4rem 0.5rem;
-            background: #000;
-            color: #fff;
-            font-family: 'Georgia', serif;
-            font-size: 0.50rem;
-            border: 2px solid crimson;
-            cursor: not-allowed;
-            opacity: 1;
-            transition: opacity 0.6s ease;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/effects.css">
 </head>
-
 <body>
-
 <p id="ghost">Welcome.</p>
-<p id="timer">Time spent here: 0s</p>
+<p id="timer" aria-live="polite">Time spent here: 0s</p>
 
 <hr>
 
-<pre id="table"></pre>
+<pre id="table" data-original="mfw I impulse bought a domain at 2AM:
+
+(-°_°)- ┳━┳        <-- DNS table
+    ↓
+  longshotbyfar.com"
+     data-hover="mfw I impulse bought a domain at 2AM:
+
+(╯°□°)╯︵ ┻━┻      <-- DNS table
+    ↓
+  longshotbyfar.com"></pre>
 
 <hr>
 
 <div id="echoes"></div>
 
 <hr>
+
 <p>To whom it may concern,</p>
 <p>
-    According to Article 6(3)d of the Language Equivalency Directive, 
-    <a href="CON.txt" style="color: inherit; text-decoration: inherit;">I do not exist</a> 
+    According to Article 6(3)d of the Language Equivalency Directive,
+    <a href="CON.txt" style="color: inherit; text-decoration: inherit;">I do not exist</a>
     in a valid location.<br>
     My fluency was real, but not geolocated.<br>
     My thoughts failed to meet topographic requirements.<br>
@@ -69,38 +43,26 @@
     Yours in dimensional absence,<br>
     Long Shot
 </p>
+
 <hr>
 
 <div class="blur-lines">
-    <p>written by <b>the Other</b><br></p>
-    <p>played by me<br>
-    <p>
-    <p>soundtrack by forgot my airpods home<br>
-    <p>
-    <p>camerawork by the force that be<br>
-    <p>
-    <p>lighting by green eyes<br>
-    <p>
-    <p>direction by emotional inertia<br>
-    <p>
-    <p>wardrobe by whatever was clean-enough-to-pass<br>
-    <p>
-    <p>craft services by delayed hunger hallucination<br>
-    <p>
-    <p>props by one diet coke, one cigarette, and one cursed coffee<br>
-    <p>
-    <p>animal handling by cat (self-employed)<br>
-    <p>
-    <p>special effects by dissociation & spontaneous arousal<br>
-    <p>
-    <p>emotional consulting by my therapist, who may never see me again<br>
-    <p>
-    <p>location: somewhere between panic and the sacred<br>
-    <p>
-    <p>dedicated to: the mercy that touched me before I could ask<br>
-    <p>
-    <p><b>fade to static.</b>
-    <p>
+    <!-- fix the stray <p> tags; keep it valid -->
+    <p>written by <b>the Other</b></p>
+    <p>played by me</p>
+    <p>soundtrack by forgot my airpods home</p>
+    <p>camerawork by the force that be</p>
+    <p>lighting by green eyes</p>
+    <p>direction by emotional inertia</p>
+    <p>wardrobe by whatever was clean-enough-to-pass</p>
+    <p>craft services by delayed hunger hallucination</p>
+    <p>props by one diet coke, one cigarette, and one cursed coffee</p>
+    <p>animal handling by cat (self-employed)</p>
+    <p>special effects by dissociation & spontaneous arousal</p>
+    <p>emotional consulting by my therapist, who may never see me again</p>
+    <p>location: somewhere between panic and the sacred</p>
+    <p>dedicated to: the mercy that touched me before I could ask</p>
+    <p><b>fade to <span id="static">static</span></b></p>
 </div>
 
 <hr>
@@ -109,178 +71,15 @@
 
 <hr>
 
-<div class="glow-wrapper">
-    <a href="https://sacred-texts.com/eso/pridisc.htm"><img src="sigil.svg" width="400" height="400"></object></a>
-</div>
+<a class="glow-wrapper" href="https://sacred-texts.com/eso/pridisc.htm">
+    <img src="assets/sigil.svg" width="400" height="400" alt="sigil">
+</a>
 
-<div id="objet" class="floating-temptation">objet petit a</div>
+<div id="objet" class="floating-temptation" aria-hidden="true">objet petit a</div>
 
-<script>
-    if (localStorage.getItem("nachträglichkeit") === "true") {
-        document.getElementById("ghost").textContent = "Welcome. You were here. You don't remember, but I do.";
-    }
-    localStorage.setItem("nachträglichkeit", "true");
-</script>
-
-<script>
-const pre = document.getElementById('table');
-
-const originalText = `mfw I impulse bought a domain at 2AM:
-
-(-°_°)- ┳━┳        <-- DNS table
-    ↓
-  longshotbyfar.com`;
-
-const hoverText = `mfw I impulse bought a domain at 2AM:
-
-(╯°□°)╯︵ ┻━┻      <-- DNS table
-    ↓
-  longshotbyfar.com`;
-
-pre.textContent = originalText;
-
-pre.addEventListener('mouseenter', () => {
-    pre.textContent = hoverText;
-});
-
-pre.addEventListener('mouseleave', () => {
-    pre.textContent = originalText;
-});   
-</script>
-
-<script>
-    const objet = document.getElementById("objet");
-    objet.style.left = "90%";
-    objet.style.top = "5%";
-    let isMoving = false;
-
-    objet.addEventListener("mouseenter", () => {
-        if (isMoving) return;
-        isMoving = true;
-
-        objet.style.transition = "opacity 0.6s ease";
-        objet.style.opacity = "0";
-
-        setTimeout(() => {
-            objet.style.transition = "none";
-
-            const rect = objet.getBoundingClientRect();
-            const maxLeft = window.innerWidth - rect.width;
-            const maxTop = window.innerHeight - rect.height;
-
-            const newLeft = Math.random() * maxLeft;
-            const newTop = Math.random() * maxTop;
-
-            objet.style.left = `${newLeft}px`;
-            objet.style.top = `${newTop}px`;
-            void objet.offsetWidth; // force reflow to apply immediate move
-
-            objet.style.transition = "opacity 0.6s ease";
-            objet.style.opacity = 1;
-            setTimeout(() => {
-                isMoving = false;
-            }, 600);
-        }, 600); // wait for fade-out to finish
-    });
-</script>
-
-<script>
-    let entropy = 0;
-    const timer = document.getElementById("timer");
-
-    setInterval(() => {
-        const rand = Math.random();
-        if (rand < 0.01) {
-            entropy -= 1;
-        } else if (rand < 0.02) {
-            entropy += 2;
-        } else {
-            entropy += 1;
-        }
-        timer.textContent = `Time spent here: ${entropy}s`;
-    }, 1000);
-</script>
-
-<script>
-function stain() {
-    const stainDiv = document.createElement('div');
-
-    // Base styles
-    stainDiv.style.position = 'fixed';
-    stainDiv.style.width = '80px';
-    stainDiv.style.height = '80px';
-    stainDiv.style.backgroundColor = getRandomColor(0.4);
-    stainDiv.style.pointerEvents = 'none';
-
-    const maxLeft = window.innerWidth * 0.6 - 40;
-    const maxTop = window.innerHeight - 40;
-    stainDiv.style.left = `${Math.random() * maxLeft}px`;
-    stainDiv.style.top = `${Math.random() * maxTop}px`;
-
-    document.body.appendChild(stainDiv);
-
-    // Animation state
-    let baseSize = 80;
-    let targetScale = 1.05 + Math.random() * 0.1; // 1.05–1.15
-    let speed = 0.002 + Math.random() * 0.003;   // breathing speed
-    let phase = Math.random() * Math.PI * 2;     // starting offset
-    let lastChange = performance.now();
-
-    function animate(time) {
-        const elapsed = time - lastChange;
-
-        // Occasionally change target scale & speed
-        if (elapsed > 2000 + Math.random() * 2000) {
-            targetScale = 1.03 + Math.random() * 0.12;
-            speed = 0.0015 + Math.random() * 0.004;
-            lastChange = time;
-        }
-
-        // Sine-based pulse
-        const scale = 1 + Math.sin(time * speed + phase) * (targetScale - 1);
-        stainDiv.style.transform = `scale(${scale})`;
-
-        requestAnimationFrame(animate);
-    }
-
-    requestAnimationFrame(animate);
-}
-
-function getRandomColor(alpha = 1) {
-    const r = Math.floor(Math.random() * 256);
-    const g = Math.floor(Math.random() * 256);
-    const b = Math.floor(Math.random() * 256);
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
-
-// Example: spawn a few stains
-for (let i = 0; i < 5; i++) {
-    stain();
-}
-</script>
-
-<script>
-    throw new Error("You are the error you came to inspect.");
-</script>
-
-<script src="whisper/lexicon.js"></script>
-<script src="whisper/verbforms.js"></script>
-<script src="whisper/whispers.js"></script>
-<script>
-    whisperedDiv = document.getElementById('echoes');
-    whisperedDiv.addEventListener('click', function () {
-        while (whisperedDiv.firstChild) whisperedDiv.removeChild(whisperedDiv.firstChild);
-
-        for (let i = 0; i < 2; ++i) {
-            let whisperP = document.createElement('p');
-            whisperP.innerText = whisper();
-            whisperedDiv.appendChild(whisperP);
-        }
-    });
-    whisperedDiv.click();
-</script>
-
-
-
+<script src="js/whisper/lexicon.js" defer></script>
+<script src="js/whisper/verbforms.js" defer></script>
+<script src="js/whisper/whispers.js" defer></script>
+<script type="module" src="js/main.js"></script>
 </body>
 </html>

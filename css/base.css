@@ -1,0 +1,5 @@
+/* keep defaults: white background, system font */
+html, body { margin: 8px; padding: 0; }
+
+/* your ASCII block preserves wrapping like before */
+pre { white-space: pre-wrap; }
