@@ -3,5 +3,3 @@ html, body { margin: 8px; padding: 0; }
 
 /* your ASCII block preserves wrapping like before */
 pre { white-space: pre-wrap; }
-
-#table { height: 85px; }
