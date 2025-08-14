@@ -271,7 +271,7 @@ for (let i = 0; i < 5; i++) {
     whisperedDiv.addEventListener('click', function () {
         while (whisperedDiv.firstChild) whisperedDiv.removeChild(whisperedDiv.firstChild);
 
-        for (let i = 0; i < 10; ++i) {
+        for (let i = 0; i < 2; ++i) {
             let whisperP = document.createElement('p');
             whisperP.innerText = whisper();
             whisperedDiv.appendChild(whisperP);
