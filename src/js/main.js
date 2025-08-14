@@ -7,6 +7,7 @@ import { startEntropyTimer } from './entropyTimer.js';
 import {wireRecordingFavicon} from "./cameraFavicon.js";
 import {wireBSOD} from "./bsod.js";
 import { initWhispers } from './whisper/init.js';
+import {devtoolsFumbler} from "./devToolsFumbler.js";
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -30,5 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const whispersContainer = qs('#whispers');
     if (whispersContainer) initWhispers(whispersContainer);
 
-    console.error("you are the error you came to inspect");
+    console.warn("you are the error you came to inspect");
+    console.log("and this is a log");
 });
