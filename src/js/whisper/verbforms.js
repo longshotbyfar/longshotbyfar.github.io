@@ -1,4 +1,4 @@
-const verbForms = {
+export const verbForms = {
     "decline": {
         "past": "declined",
         "gerund": "declining",

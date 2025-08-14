@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "esbuild": "^0.25.9",
+    "html-minifier-terser": "^7.2.0",
+    "rimraf": "^6.0.1"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "serve": "npx http-server dist -p 5173 --gzip --brotli --cors"
+  }
+}

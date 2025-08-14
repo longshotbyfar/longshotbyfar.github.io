@@ -1,4 +1,6 @@
-// 🌌 Dreamlike / Poetic
+import { lexicon } from './lexicon.js';
+import { verbForms } from './verbforms.js';
+
 const dreamlikeTemplates = [
     "The {adj} {noun} {verb_past} the {adj_2} {noun_2}.",
     "If the {noun} {verb_s}, then the {noun_2} will {verb_p_2}.",
@@ -31,7 +33,6 @@ const dreamlikeTemplates = [
     "Even as the {noun} {verb_s}, the {noun} {verb_past_2} beneath it."
 ];
 
-// 🧠 Philosophical / Psychoanalytic (with authors)
 const philosophicalTemplates = [
     "The {noun} is structured like a {noun_2}.", // Lacan
     "When you {verb_p} into the {noun}, the {noun} {verb_s} into you.", // Nietzsche
@@ -55,7 +56,6 @@ const philosophicalTemplates = [
     "The {noun} is more {adj} than the {noun_2}.", // Baudrillard
 ];
 
-// ⚖️ Dialectical / Hegelian / Žižekian
 const dialecticTemplates = [
     "The {noun} is only what it {verb_s} in the negation of the {noun_2}.",
     "What appears as {adj} is in truth the {adj_2} of {noun} becoming {noun_2}.",
@@ -69,7 +69,6 @@ const dialecticTemplates = [
     "History is the unfolding of the {noun} through the {adj} {noun_2}."
 ];
 
-// 🕯️ Gnostic / Mystical / Occult
 const gnosticTemplates = [
     "The {noun} that descends is not the {noun} that returns.",
     "Before the {noun} can rise, it must {verb_p} through the {adj} {noun_2}.",
@@ -118,34 +117,33 @@ function inflectVerb(base, formKey) {
 
 function getVerbFormKey(baseSlot) {
     const map = {
-        "verb_s": "present_3s",
-        "verb_p": "present_non_3s",
-        "verb_past": "past",
-        "verb_ing": "gerund",
-        "verb_part": "participle"
+        verb_s:   'present_3s',
+        verb_p:   'present_non_3s',
+        verb_past:'past',
+        verb_ing: 'gerund',
+        verb_part:'participle'
     };
-    return map[baseSlot] || "present_non_3s"; // fallback
+    return map[baseSlot] || 'present_non_3s';
 }
 
 function fillTemplate(template) {
     const used = {};
-
     return template.replace(/\{(.*?)\}/g, (_, slot) => {
         if (used[slot]) return used[slot];
 
-        const baseSlot = slot.replace(/_\d+$/, ''); // strip trailing _2, _3 etc.
+        const baseSlot = slot.replace(/_\d+$/, ''); // strip _2, _3 …
         let word;
 
-        if (baseSlot.startsWith("adj")) {
+        if (baseSlot.startsWith('adj')) {
             word = getRandom(lexicon.adj);
-        } else if (baseSlot.startsWith("noun")) {
+        } else if (baseSlot.startsWith('noun')) {
             word = getRandom(lexicon.noun);
-        } else if (baseSlot.startsWith("verb")) {
-            const formKey = getVerbFormKey(baseSlot); // e.g. "verb_past" → "past"
+        } else if (baseSlot.startsWith('verb')) {
+            const formKey = getVerbFormKey(baseSlot);
             const baseVerb = getRandom(lexicon.verb);
             word = inflectVerb(baseVerb, formKey);
         } else {
-            word = slot;
+            word = slot; // unknown slot: echo back
         }
 
         used[slot] = word;
@@ -153,11 +151,11 @@ function fillTemplate(template) {
     });
 }
 
-function whisper(templates) {
+export function whisper(templates) {
     if (!templates) {
-        const templateArrs = [dreamlikeTemplates, dialecticTemplates, gnosticTemplates, absurdTemplates];
-        templates = templateArrs[Math.floor(Math.random() * templateArrs.length)];
+        const banks = [dreamlikeTemplates, dialecticTemplates, gnosticTemplates, absurdTemplates];
+        templates = banks[Math.floor(Math.random() * banks.length)];
     }
-    const filled = fillTemplate(getRandom(templates))
+    const filled = fillTemplate(getRandom(templates));
     return String(filled[0]).toUpperCase() + String(filled).slice(1);
 }

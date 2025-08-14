@@ -4,9 +4,10 @@ import { spawnStains } from './stains.js';
 import { wireObjet } from './objet.js';
 import { wireAsciiFlip } from './tableHover.js';
 import { startEntropyTimer } from './entropyTimer.js';
-import { initWhispers } from './whisper/init.js';
 import {wireRecordingFavicon} from "./cameraFavicon.js";
 import {wireBSOD} from "./bsod.js";
+import { initWhispers } from './whisper/init.js';
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // Memory easter egg
@@ -31,4 +32,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.error("you are the error you came to inspect");
 });
-1

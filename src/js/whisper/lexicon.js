@@ -1,4 +1,4 @@
-const lexicon = {
+export const lexicon = {
     "noun": [
         "plotter",
         "smock",
