@@ -26,10 +26,7 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
-      - run: node build.mjs   # generates dist/index.html + dist/app.js
-
-      # OPTIONAL: custom domain → set once and forget
-      # - run: echo "longshotbyfar.com" > dist/CNAME
+      - run: node build.mjs
 
       - uses: actions/upload-pages-artifact@v3
         with:
