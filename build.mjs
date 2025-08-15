@@ -4,7 +4,6 @@ import {cp, mkdir, readdir, readFile, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {minify as minifyHTML} from 'html-minifier-terser';
 import process from 'process';
-import stripConsoleLogPlugin from "./plugins/stripConsoleLog.mjs";
 import frictionPlugin from "./plugins/friction.mjs";
 
 const ROOT = process.cwd();
@@ -41,7 +40,6 @@ await esbuild.build({
     drop: ['debugger'],
     outfile: 'dist/app.js',
     plugins: [
-        stripConsoleLogPlugin(),
         frictionPlugin()
     ]
 });
