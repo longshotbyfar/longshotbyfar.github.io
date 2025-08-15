@@ -26,7 +26,7 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
-      - run: node build.mjs
+      - run: npx esbuild src/js/app.js --bundle --minify --define:__DEV__=false --outfile=dist/app.js
 
       - uses: actions/upload-pages-artifact@v3
         with:
