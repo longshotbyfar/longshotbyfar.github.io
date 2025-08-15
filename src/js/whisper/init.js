@@ -1,4 +1,4 @@
-import { whisper } from './whispers.js';
+import { whisper } from './whisper.js';
 
 export function initWhispers(containerOrSelector) {
     const container = typeof containerOrSelector === 'string'
@@ -7,15 +7,15 @@ export function initWhispers(containerOrSelector) {
 
     if (!container) return; // nothing to do
 
-    container.addEventListener('click', () => {
-        container.replaceChildren();
-        for (let i = 0; i < 2; i++) {
-            const p = document.createElement('p');
-            p.textContent = whisper();
-            container.appendChild(p);
-        }
-    });
+    container.addEventListener('click', () => refreshWhispers(container));
+    refreshWhispers(container);
+}
 
-    // prime once
-    container.click();
+function refreshWhispers(container) {
+    container.replaceChildren();
+    for (let i = 0; i < 2; i++) {
+        const p = document.createElement('p');
+        p.textContent = whisper();
+        container.appendChild(p);
+    }
 }

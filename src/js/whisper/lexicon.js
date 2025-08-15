@@ -1,5 +1,5 @@
 export const lexicon = {
-    "noun": [
+    "_x_noun": [
         "plotter",
         "smock",
         "nephroptosia",
@@ -9508,7 +9508,7 @@ export const lexicon = {
         "sheath",
         "surgery"
     ],
-    "verb": [
+    "_x_verb": [
         "ferment",
         "twitch",
         "preserve",
@@ -9756,7 +9756,7 @@ export const lexicon = {
         "scorch",
         "spangle",
     ],
-    "adj": [
+    "_x_adj": [
         "superacknowledgment",
         "formaldehydesulphoxylic",
         "pseudolamellibranchiate",

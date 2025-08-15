@@ -1,42 +1,51 @@
 // build.mjs
 import esbuild from 'esbuild';
-import { readFile, writeFile, mkdir, readdir, cp, copyFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import { minify as minifyHTML } from 'html-minifier-terser';
+import {cp, mkdir, readdir, readFile, writeFile} from 'node:fs/promises';
+import {join} from 'node:path';
+import {minify as minifyHTML} from 'html-minifier-terser';
 import process from 'process';
-
-import stripConsoleLog from './plugins/stripConsoleLog.mjs';
-import friction from './plugins/friction.mjs';
+import stripConsoleLogPlugin from "./plugins/stripConsoleLog.mjs";
+import frictionPlugin from "./plugins/friction.mjs";
 
 const ROOT = process.cwd();
-const SRC  = 'src';
+const SRC = 'src';
 const DIST = 'dist';
 
-await mkdir(DIST, { recursive: true });
+await mkdir(DIST, {recursive: true});
 
-/* -------- JS: bundle then let plugins post-process outfile -------- */
+const MANGLE_PROP_PREFIX_RE = /^_x_/;
+
 await esbuild.build({
-    entryPoints: [join(SRC, 'js', 'main.js')],
+    entryPoints: ['src/js/app.js'],
     bundle: true,
+    globalName: 'D',
+
+    define: {
+        DEBUG: "false"   // will replace every DEBUG in your code with literal false
+    },
+
     minify: true,
+    minifyIdentifiers: true,
+    minifySyntax: true,
+    minifyWhitespace: true,
+    keepNames: false,
+
+    mangleProps: /^_x_/,
+    mangleQuoted: true,          // also mangle "_x_*" when quoted
+    reserveProps: /^__/,         // do NOT touch __proto__/__whatever
+    mangleCache: {},             // optional: persist this object across builds
+
     format: 'iife',
     target: 'es2018',
-    legalComments: 'none',         // strip JS block comments in output
-    drop: ['debugger'],            // keep console.error/warn; logs are removed by our plugin
-    outfile: join(DIST, 'app.js'),
-    write: true,                   // friction will rewrite outfile in-place onEnd
+    legalComments: 'none',
+    drop: ['debugger'],
+    outfile: 'dist/app.js',
     plugins: [
-        stripConsoleLog(),     // remove only console.log(...)
-        friction({
-            base64Strings: true,
-            injectDecoy:  true,
-            wrapEval:     false,       // set true if you want eval wrapper & accept CSP risk
-            sabotageWhitespace: true
-        })
+        stripConsoleLogPlugin(),
+        frictionPlugin()
     ]
 });
 
-/* -------- CSS inline (optional) -------- */
 let inlineCSS = '';
 try {
     const files = await readdir(join(SRC, 'css'));
@@ -45,21 +54,18 @@ try {
         css = css.replace(/\/\*[\s\S]*?\*\//g, ''); // strip comments
         inlineCSS += css + '\n';
     }
-} catch {}
+} catch {
+}
 
-/* -------- HTML: load src, strip dev links, inject CSS+JS, minify -------- */
 let html = await readFile(join(SRC, 'index.html'), 'utf8');
-
 html = html.replace(
     /(<pre[\s\S]*?>[\s\S]*?<\/pre>)/g,
     block => block.replace(/<--/g, '&lt;--')
 );
-
 html = html
     .replace(/<link[^>]+href=["']\s*css\/[^"']+["'][^>]*>\s*/gi, '')
     .replace(/<script[^>]*src=["']\s*js\/[^"']+["'][^>]*>\s*<\/script>\s*/gi, '')
     .replace(/\n\s*\n/g, '\n');
-
 if (inlineCSS.trim()) {
     const styleTag = `<style>${inlineCSS}</style>`;
     html = html.includes('</head>') ? html.replace('</head>', `${styleTag}</head>`) : styleTag + html;
@@ -68,18 +74,17 @@ if (inlineCSS.trim()) {
 if (!/app\.js/.test(html)) {
     html = html.replace('</body>', '<script src="app.js" defer></script></body>');
 }
-
 const min = await minifyHTML(html, {
     collapseWhitespace: true,
     removeComments: true,
-    minifyCSS: { level: 2 },
-    minifyJS: { format: { comments: false } }
+    minifyCSS: {level: 2},
+    minifyJS: {format: {comments: false}}
 });
 
 await writeFile(join(DIST, 'index.html'), min, 'utf8');
-
-/* -------- extras: copy assets + CNAME if present -------- */
-try { await cp(join(SRC, 'assets'), join(DIST, 'assets'), { recursive: true }); } catch {}
-try { await copyFile(join(ROOT, 'CNAME'), join(DIST, 'CNAME')); } catch {}
+try {
+    await cp(join(SRC, 'assets'), join(DIST, 'assets'), {recursive: true});
+} catch {
+}
 
 console.log('✅ Built → dist/index.html + dist/app.js');

@@ -2,6 +2,8 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+const MIN_B64_LENGTH = 2;
+
 export default function frictionPlugin({
                                            base64Strings = true,
                                            injectDecoy = true,
@@ -50,7 +52,7 @@ function encodeStrings(js) {
         const plain = s
             .replace(/\\n/g,'\n').replace(/\\r/g,'\r').replace(/\\t/g,'\t')
             .replace(/\\`/g,'`').replace(/\\"/g,'"').replace(/\\\\/g,'\\');
-        if (plain.length < 6) return quote + s + quote;
+        if (plain.length < MIN_B64_LENGTH) return quote + s + quote;
         const b64 = Buffer.from(plain, 'utf8').toString('base64');
         return `__B64("${b64}")`;
     };

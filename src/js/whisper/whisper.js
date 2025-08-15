@@ -1,5 +1,5 @@
-import { lexicon } from './lexicon.js';
-import { verbForms } from './verbforms.js';
+import {lexicon} from './lexicon.js';
+import {verbForms} from './verbForms.js';
 
 const dreamlikeTemplates = [
     "The {adj} {noun} {verb_past} the {adj_2} {noun_2}.",
@@ -117,11 +117,11 @@ function inflectVerb(base, formKey) {
 
 function getVerbFormKey(baseSlot) {
     const map = {
-        verb_s:   'present_3s',
-        verb_p:   'present_non_3s',
-        verb_past:'past',
-        verb_ing: 'gerund',
-        verb_part:'participle'
+        verb_s: 2,
+        verb_p: 3,
+        verb_past: 0,
+        verb_ing: 1,
+        verb_part: 4
     };
     return map[baseSlot] || 'present_non_3s';
 }
@@ -131,22 +131,23 @@ function fillTemplate(template) {
     return template.replace(/\{(.*?)\}/g, (_, slot) => {
         if (used[slot]) return used[slot];
 
-        const baseSlot = slot.replace(/_\d+$/, ''); // strip _2, _3 …
+        const baseSlot = "_x_" + slot.replace(/_\d+$/, ''); // strip _2, _3 …
         let word;
 
-        if (baseSlot.startsWith('adj')) {
-            word = getRandom(lexicon.adj);
-        } else if (baseSlot.startsWith('noun')) {
-            word = getRandom(lexicon.noun);
-        } else if (baseSlot.startsWith('verb')) {
+        if (baseSlot.startsWith('_x_adj')) {
+            word = getRandom(lexicon._x_adj);
+        } else if (baseSlot.startsWith('_x_noun')) {
+            word = getRandom(lexicon._x_noun);
+        } else if (baseSlot.startsWith('_x_verb')) {
             const formKey = getVerbFormKey(baseSlot);
-            const baseVerb = getRandom(lexicon.verb);
+            const baseVerb = getRandom(lexicon._x_verb);
             word = inflectVerb(baseVerb, formKey);
         } else {
             word = slot; // unknown slot: echo back
         }
 
         used[slot] = word;
+
         return word;
     });
 }

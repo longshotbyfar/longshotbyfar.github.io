@@ -1,14 +1,22 @@
-import { qs } from './dom.js';
-import { playStatic } from './staticAudio.js';
-import { spawnStains } from './stains.js';
-import { wireObjet } from './objet.js';
-import { wireAsciiFlip } from './tableHover.js';
-import { startEntropyTimer } from './entropyTimer.js';
-import {wireRecordingFavicon} from "./cameraFavicon.js";
-import {wireBSOD} from "./bsod.js";
-import { initWhispers } from './whisper/init.js';
-import {devtoolsFumbler} from "./devToolsFumbler.js";
+// SETUP DEV FLAG
+globalThis.__DEV__ ??= true;
+if (__DEV__) {
+    globalThis.log = msg => console.log(msg);
+}
+else {
+    globalThis.log = _ => {};
+}
+log("VIEWING IN DEV MODE");
 
+import {qs} from './dom.js';
+import {playStatic} from './staticAudio.js';
+import {spawnStains} from './stain.js';
+import {wireObjet} from './objet.js';
+import {wireAsciiFlip} from './tableHover.js';
+import {startEntropyTimer} from './entropyTimer.js';
+import {wireRecordingFavicon} from "./cameraFavicon.js";
+import {initWhispers} from './whisper/init.js';
+import {wireBSOD} from "./bsod.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     // Memory easter egg
@@ -21,16 +29,15 @@ document.addEventListener('DOMContentLoaded', () => {
     startEntropyTimer(qs('#timer'));
     wireObjet(qs('#objet'));
     spawnStains(5);
-    wireBSOD({ oncePerVisit: true });
-    const rec = wireRecordingFavicon({ blinkMs: 600 });
+    wireBSOD({});
+    const rec = wireRecordingFavicon({blinkMs: 600});
 
     qs('#static').addEventListener('click', () =>
-            playStatic({ duration: 2.5, fadeOut: 1.0, level: 0.05 })
+        playStatic({duration: 2.5, fadeOut: 1.0, level: 0.05})
     );
 
     const whispersContainer = qs('#whispers');
     if (whispersContainer) initWhispers(whispersContainer);
 
     console.warn("you are the error you came to inspect");
-    console.log("and this is a log");
 });
