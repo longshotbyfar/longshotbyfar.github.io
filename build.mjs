@@ -10,29 +10,42 @@ const ROOT = process.cwd();
 const SRC = 'src';
 const DIST = 'dist';
 
-await mkdir(DIST, {recursive: true});
+// ---- env-driven DEV flag ----------------------------------------------------
+const isCI =
+    process.env.GITHUB_ACTIONS === 'true' ||
+    process.env.CI === 'true' ||
+    process.env.NODE_ENV === 'production';
 
-const MANGLE_PROP_PREFIX_RE = /^_x_/;
+const override = process.env.DEV?.toLowerCase();
+const DEV = override === 'true' ? true
+    : override === 'false' ? false
+        : !isCI;
+
+// -----------------------------------------------------------------------------
+// Build JS
+await mkdir(DIST, {recursive: true});
 
 await esbuild.build({
     entryPoints: ['src/js/app.js'],
     bundle: true,
     globalName: 'D',
 
-    define: {
-        DEBUG: "false"   // will replace every DEBUG in your code with literal false
-    },
+    // flip at the source
+    define: { __DEV__: DEV ? 'true' : 'false' },
 
-    minify: true,
-    minifyIdentifiers: true,
-    minifySyntax: true,
-    minifyWhitespace: true,
-    keepNames: false,
+    // keep dev builds debuggable; go feral in CI
+    minify: !DEV,
+    minifyIdentifiers: !DEV,
+    minifySyntax: !DEV,
+    minifyWhitespace: !DEV,
+    keepNames: DEV,
+    sourcemap: DEV ? 'inline' : false,
 
-    mangleProps: /^_x_/,
-    mangleQuoted: true,          // also mangle "_x_*" when quoted
-    reserveProps: /^__/,         // do NOT touch __proto__/__whatever
-    mangleCache: {},             // optional: persist this object across builds
+    // only mangle in prod; leave undefined in dev
+    mangleProps: DEV ? undefined : /^_x_/,
+    mangleQuoted: DEV ? undefined : true,
+    reserveProps: /^__/,        // never touch __proto__/__*
+    mangleCache: DEV ? undefined : {},
 
     format: 'iife',
     target: 'es2018',
@@ -44,6 +57,8 @@ await esbuild.build({
     ]
 });
 
+// -----------------------------------------------------------------------------
+// Build HTML (inline CSS, inject script, minify)
 let inlineCSS = '';
 try {
     const files = await readdir(join(SRC, 'css'));
@@ -52,8 +67,7 @@ try {
         css = css.replace(/\/\*[\s\S]*?\*\//g, ''); // strip comments
         inlineCSS += css + '\n';
     }
-} catch {
-}
+} catch { /* no css dir, fine */ }
 
 let html = await readFile(join(SRC, 'index.html'), 'utf8');
 html = html.replace(
@@ -64,6 +78,7 @@ html = html
     .replace(/<link[^>]+href=["']\s*css\/[^"']+["'][^>]*>\s*/gi, '')
     .replace(/<script[^>]*src=["']\s*js\/[^"']+["'][^>]*>\s*<\/script>\s*/gi, '')
     .replace(/\n\s*\n/g, '\n');
+
 if (inlineCSS.trim()) {
     const styleTag = `<style>${inlineCSS}</style>`;
     html = html.includes('</head>') ? html.replace('</head>', `${styleTag}</head>`) : styleTag + html;
@@ -72,6 +87,7 @@ if (inlineCSS.trim()) {
 if (!/app\.js/.test(html)) {
     html = html.replace('</body>', '<script src="app.js" defer></script></body>');
 }
+
 const min = await minifyHTML(html, {
     collapseWhitespace: true,
     removeComments: true,
@@ -80,9 +96,9 @@ const min = await minifyHTML(html, {
 });
 
 await writeFile(join(DIST, 'index.html'), min, 'utf8');
+
 try {
     await cp(join(SRC, 'assets'), join(DIST, 'assets'), {recursive: true});
-} catch {
-}
+} catch { /* no assets dir, fine */ }
 
-console.log('✅ Built → dist/index.html + dist/app.js');
+console.log(`✅ Built (${DEV ? 'dev' : 'prod'}) → dist/index.html + dist/app.js`);

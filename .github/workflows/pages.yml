@@ -23,11 +23,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: npm
 
       - run: npm ci
-      - run: npx esbuild src/js/app.js --bundle --minify --define:__DEV__=false --outfile=dist/app.js
 
+      - run: node build.mjs
+        env:
+          NODE_ENV: production
+
+      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -38,5 +42,4 @@ jobs:
     environment:
       name: github-pages
     steps:
-      - id: deploy
-        uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v4
