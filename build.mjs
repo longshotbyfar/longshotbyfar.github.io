@@ -10,7 +10,6 @@ const ROOT = process.cwd();
 const SRC = 'src';
 const DIST = 'dist';
 
-// ---- env-driven DEV flag ----------------------------------------------------
 const isCI =
     process.env.GITHUB_ACTIONS === 'true' ||
     process.env.CI === 'true' ||
@@ -21,19 +20,15 @@ const DEV = override === 'true' ? true
     : override === 'false' ? false
         : !isCI;
 
-// -----------------------------------------------------------------------------
-// Build JS
 await mkdir(DIST, {recursive: true});
 
 await esbuild.build({
     entryPoints: ['src/js/app.js'],
     bundle: true,
     globalName: 'D',
-
-    // flip at the source
     define: { __DEV__: DEV ? 'true' : 'false' },
+    // banner: { js: `const __DEV__ = ${DEV ? 'true' : 'false'};` },
 
-    // keep dev builds debuggable; go feral in CI
     minify: !DEV,
     minifyIdentifiers: !DEV,
     minifySyntax: !DEV,

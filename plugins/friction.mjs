@@ -43,34 +43,92 @@ export default function frictionPlugin({
 
 /* ---------- helpers ---------- */
 
-// Encode plain string literals to __B64("…") in already-bundled code
+// Encode plain string literals to __B64("…"), but if the string is
+// an object-literal key (before a ':' and preceded by '{' or ','),
+// emit a computed key: [__B64("…")]: ...
 function encodeStrings(js) {
     let out = '', i = 0, n = js.length;
-    let q = null, esc = false, sl=false, ml=false, buf = '';
-    const emit = (s, quote) => {
-        if (quote === '`' && s.includes('${')) return quote + s + quote;
-        const plain = s
-            .replace(/\\n/g,'\n').replace(/\\r/g,'\r').replace(/\\t/g,'\t')
-            .replace(/\\`/g,'`').replace(/\\"/g,'"').replace(/\\\\/g,'\\');
-        if (plain.length < MIN_B64_LENGTH) return quote + s + quote;
-        const b64 = Buffer.from(plain, 'utf8').toString('base64');
-        return `__B64("${b64}")`;
+    let q = null, esc = false, sl = false, ml = false, buf = '';
+
+    // track the last non-whitespace char we've emitted, to spot '{' or ','
+    let lastSig = null;
+
+    const push = (s) => {
+        out += s;
+        // update last significant char
+        for (let k = 0; k < s.length; k++) {
+            const ch = s[k];
+            if (ch !== ' ' && ch !== '\t' && ch !== '\r' && ch !== '\n') lastSig = ch;
+        }
     };
+
+    const emitString = (rawContent, quoteChar, isObjKey) => {
+        // leave template literals with ${} untouched
+        if (quoteChar === '`' && rawContent.includes('${')) return quoteChar + rawContent + quoteChar;
+
+        // unescape basic escapes to get the real content length
+        const plain = rawContent
+            .replace(/\\n/g, '\n').replace(/\\r/g, '\r').replace(/\\t/g, '\t')
+            .replace(/\\`/g, '`').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+
+        if (plain.length < MIN_B64_LENGTH) {
+            return quoteChar + rawContent + quoteChar; // too short, keep literal
+        }
+
+        const b64 = Buffer.from(plain, 'utf8').toString('base64');
+        const call = `__B64("${b64}")`;
+        return isObjKey ? `[${call}]` : call;
+    };
+
+    const peekNonWS = (from) => {
+        let j = from;
+        while (j < n) {
+            const ch = js[j];
+            if (ch !== ' ' && ch !== '\t' && ch !== '\r' && ch !== '\n') return ch;
+            j++;
+        }
+        return '';
+    };
+
     while (i < n) {
-        const ch = js[i], nx = js[i+1];
-        if (sl) { out += ch; if (ch === '\n') sl = false; i++; continue; }
-        if (ml) { out += ch; if (ch==='*'&&nx=== '/') { out+=nx; i+=2; ml=false; continue; } i++; continue; }
+        const ch = js[i], nx = js[i + 1];
+
+        // single-line comment
+        if (sl) { push(ch); if (ch === '\n') sl = false; i++; continue; }
+
+        // multi-line comment
+        if (ml) { push(ch); if (ch === '*' && nx === '/') { push(nx); i += 2; ml = false; continue; } i++; continue; }
+
+        // inside a string
         if (q) {
-            if (esc) { buf += ch; esc=false; i++; continue; }
-            if (ch === '\\') { buf += ch; esc=true; i++; continue; }
-            if (ch === q) { out += emit(buf, q); q=null; buf=''; i++; continue; }
+            if (esc) { buf += ch; esc = false; i++; continue; }
+            if (ch === '\\') { buf += ch; esc = true; i++; continue; }
+            if (ch === q) {
+                // We are closing the string; decide if it's an object key.
+                // Object key if: next non-WS char is ':' AND lastSig was '{' or ','
+                const nextSig = peekNonWS(i + 1);
+                const isObjKey = nextSig === ':' && (lastSig === '{' || lastSig === ',');
+                push(emitString(buf, q, isObjKey));
+                q = null; buf = ''; i++;
+
+                // If it was an object key, we still need to emit the following ':' later;
+                // main loop will handle it normally. lastSig will update when ':' is pushed.
+                continue;
+            }
             buf += ch; i++; continue;
         }
-        if (ch === '"' || ch === "'" || ch === '`') { q=ch; buf=''; i++; continue; }
-        if (ch === '/' && nx === '/') { out += ch; sl = true; i++; continue; }
-        if (ch === '/' && nx === '*') { out += ch; ml = true; i++; continue; }
-        out += ch; i++;
+
+        // start of a string
+        if (ch === '"' || ch === "'" || ch === '`') { q = ch; buf = ''; i++; continue; }
+
+        // start of comments
+        if (ch === '/' && nx === '/') { push(ch); sl = true; i++; continue; }
+        if (ch === '/' && nx === '*') { push(ch); ml = true; i++; continue; }
+
+        push(ch);
+        i++;
     }
+
     return `function __B64(s){try{return decodeURIComponent(escape(atob(s)))}catch(e){return atob(s)}}\n` + out;
 }
 

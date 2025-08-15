@@ -30,6 +30,7 @@ jobs:
       - run: node build.mjs
         env:
           NODE_ENV: production
+          DEV: 0
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

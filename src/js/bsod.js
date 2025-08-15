@@ -1,4 +1,3 @@
-// full BSOD with small chance per click; cancels that click's navigation
 export function wireBSOD({
                              ratePerClick = 0.01,
                              autoCloseAt100 = true,
@@ -8,7 +7,6 @@ export function wireBSOD({
     let active = false;
     let trippedThisVisit = false;
 
-    // overlay DOM (one-time)
     const o = document.createElement('div');
     o.className = 'bsod';
     o.innerHTML = `
@@ -30,7 +28,7 @@ export function wireBSOD({
 </div>`;
     document.body.appendChild(o);
 
-    function showBSOD(cancelledClickEvent) {
+    function showBSOD() {
         if (active) return;
         active = true;
         if (oncePerVisit) trippedThisVisit = true;
@@ -60,18 +58,13 @@ export function wireBSOD({
             o.classList.remove('show');
             document.documentElement.style.overflow = prevOverflow;
             active = false;
-            // if we intercepted a click, optionally re-fire it after close:
-            // (leave disabled for chaos; enable if you want polite behavior)
-            // if (cancelledClickEvent && cancelledClickEvent.target) cancelledClickEvent.target.click();
         }
     }
 
-    // probabilistic hijack on any click (capture so it beats links/buttons)
     document.addEventListener('click', (e) => {
         if (active) return;
         if (oncePerVisit && trippedThisVisit) return;
         if (Math.random() < ratePerClick) {
-            // stop this click from navigating / activating
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation();

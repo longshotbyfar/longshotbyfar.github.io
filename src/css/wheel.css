@@ -1,0 +1,23 @@
+.glow-wrapper {
+    position: fixed;
+    bottom: 0;
+    width: 96px;
+    height: 96px;
+    transform: translate3d(-200px,0,0) rotate(0deg);
+    will-change: transform, filter;
+    filter: none;
+    transition: filter 0.2s ease;
+    pointer-events: auto;
+}
+.glow-wrapper:hover {
+    filter:
+            drop-shadow(0 0 6px #0f0)
+            drop-shadow(0 0 12px #0f0)
+            drop-shadow(0 0 24px limegreen);
+}
+.glow-wrapper img {
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+}

@@ -1,11 +1,6 @@
 // SETUP DEV FLAG
-globalThis.__DEV__ ??= true;
-if (__DEV__) {
-    globalThis.log = msg => console.log(msg);
-}
-else {
-    globalThis.log = _ => {};
-}
+globalThis['__DEV__'] ??= true;
+globalThis.log = __DEV__ ? (msg => console.log(msg)) : (() => {});
 log("VIEWING IN DEV MODE");
 
 import {qs} from './dom.js';
@@ -17,6 +12,9 @@ import {startEntropyTimer} from './entropyTimer.js';
 import {wireRecordingFavicon} from "./cameraFavicon.js";
 import {initWhispers} from './whisper/init.js';
 import {wireBSOD} from "./bsod.js";
+import {createWheel} from "./wheel.js";
+
+console.log('exports:', { createWheel });
 
 document.addEventListener('DOMContentLoaded', () => {
     // Memory easter egg
@@ -31,6 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     spawnStains(5);
     wireBSOD({});
     const rec = wireRecordingFavicon({blinkMs: 600});
+
+    const wheel = createWheel('#wheel', {
+        speed: 180,
+        padding: 1.5,
+        gap: [4000, 10000],
+        bothDirections: true
+    });
+    wheel.start();
 
     qs('#static').addEventListener('click', () =>
         playStatic({duration: 2.5, fadeOut: 1.0, level: 0.05})
