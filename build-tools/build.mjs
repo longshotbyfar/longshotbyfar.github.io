@@ -1,14 +1,14 @@
 // build.mjs
 import esbuild from 'esbuild';
-import { minify as minifyHTML } from 'html-minifier-terser';
-import { load as loadHTML } from 'cheerio';
-import { cp, mkdir, readdir, readFile, writeFile, access } from 'node:fs/promises';
-import { join, basename, extname } from 'node:path';
+import {minify as minifyHTML} from 'html-minifier-terser';
+import {load as loadHTML} from 'cheerio';
+import {cp, mkdir, readdir, readFile, writeFile, access} from 'node:fs/promises';
+import {join, basename, extname} from 'node:path';
 import process from 'process';
 import frictionPlugin from './plugins/friction.mjs';
 import {runStaticMasonry} from "./static-masonry.mjs"; // remove if not using
 
-const SRC  = 'src';
+const SRC = 'src';
 const DIST = 'dist';
 
 const isCI = process.env.GITHUB_ACTIONS === 'true'
@@ -18,10 +18,17 @@ const isCI = process.env.GITHUB_ACTIONS === 'true'
 const DEV_OVERRIDE = process.env.DEV?.toLowerCase();
 const DEV = DEV_OVERRIDE === 'true' ? true : DEV_OVERRIDE === 'false' ? false : !isCI;
 
-await mkdir(DIST, { recursive: true });
+await mkdir(DIST, {recursive: true});
 
 /* ───────────────── helpers ───────────────── */
-const exists = async p => { try { await access(p); return true; } catch { return false; } };
+const exists = async p => {
+    try {
+        await access(p);
+        return true;
+    } catch {
+        return false;
+    }
+};
 const listRootHtml = async () => (await readdir(SRC)).filter(f => f.toLowerCase().endsWith('.html'));
 const stripCssComments = css => css.replace(/\/\*[\s\S]*?\*\//g, '');
 
@@ -31,7 +38,9 @@ async function readCssDir(dir) {
         let out = '';
         for (const f of files) out += stripCssComments(await readFile(join(dir, f), 'utf8')) + '\n';
         return out;
-    } catch { return ''; }
+    } catch {
+        return '';
+    }
 }
 
 async function resolveImplicitEntry(pageName) {
@@ -50,7 +59,8 @@ async function resolveImplicitEntry(pageName) {
 /* ───────── parse pages with Cheerio, preserve/decide scripts ───────── */
 const htmlFiles = await listRootHtml();
 if (!htmlFiles.length) {
-    console.error('No HTML files found in src/'); process.exit(1);
+    console.error('No HTML files found in src/');
+    process.exit(1);
 }
 
 const pages = [];
@@ -58,7 +68,7 @@ for (const htmlName of htmlFiles) {
     const pageName = basename(htmlName, extname(htmlName));
     const raw = await readFile(join(SRC, htmlName), 'utf8');
 
-    const $ = loadHTML(raw, { decodeEntities: false });
+    const $ = loadHTML(raw, {decodeEntities: false});
 
     // Ensure structure
     if ($('html').length === 0) {
@@ -123,7 +133,7 @@ for (const htmlName of htmlFiles) {
     let serialized = $.html();
     if (!/^<!doctype html>/i.test(serialized)) serialized = `<!doctype html>\n${serialized}`;
 
-    pages.push({ htmlName, pageName, html: serialized, jsRel, hasStack });
+    pages.push({htmlName, pageName, html: serialized, jsRel, hasStack});
 }
 
 /* ───────── bundle ESM entries (mirror src/** → dist/**) ───────── */
@@ -138,7 +148,7 @@ if (entriesAbs.length) {
         platform: 'browser',
         target: 'es2018',
 
-        define: { __DEV__: DEV ? 'true' : 'false' },
+        define: {__DEV__: DEV ? 'true' : 'false'},
         minify: !DEV,
         minifyIdentifiers: !DEV,
         minifySyntax: !DEV,
@@ -152,7 +162,7 @@ if (entriesAbs.length) {
         entryNames: '[dir]/[name]',
         chunkNames: 'chunks/[name]-[hash]',
         assetNames: 'assets/[name]-[hash]',
-        plugins: [ frictionPlugin() ] // or remove
+        plugins: [frictionPlugin()] // or remove
     });
 }
 
@@ -161,19 +171,25 @@ for (const p of pages) {
     const min = await minifyHTML(p.html, {
         collapseWhitespace: true,
         removeComments: true,
-        minifyCSS: { level: 2 },
-        minifyJS: { format: { comments: false } }
+        minifyCSS: {level: 2},
+        minifyJS: {format: {comments: false}}
     });
     await writeFile(join(DIST, p.htmlName), min, 'utf8');
 }
 
 /* ───────── copy assets (root + per-page) ───────── */
-const copyIf = async (from, to) => { if (await exists(from)) await cp(from, to, { recursive: true }); };
+const copyIf = async (from, to) => {
+    if (await exists(from)) await cp(from, to, {recursive: true});
+};
 await copyIf(join(SRC, 'assets'), join(DIST, 'assets'));
-for (const { pageName } of pages) {
+for (const {pageName} of pages) {
     if (pageName !== 'index') await copyIf(join(SRC, pageName, 'assets'), join(DIST, pageName, 'assets'));
 }
 
-await runStaticMasonry();
+try {
+    await runStaticMasonry();
+} catch (e) {
+    console.warn('⚠️ static masonry skipped:', e?.message || e);
+}
 
 console.log(`✅ Built ${pages.length} page(s) (${DEV ? 'dev' : 'prod'}) → dist/** (per-page ESM, static masonry css emitted)`);

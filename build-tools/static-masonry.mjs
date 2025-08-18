@@ -9,15 +9,18 @@ const PAGE = '/index.html';                // the page with the stack (adjust if
 
 // same logic as your runtime (minus observers)
 function layoutScript() {
-    function clamp(a,b,x){ return Math.max(a, Math.min(b, x)); }
+    function clamp(a, b, x) {
+        return Math.max(a, Math.min(b, x));
+    }
+
     const stack = document.querySelector('.stack');
-    if (!stack) return { ok:false, reason:'no .stack' };
+    if (!stack) return {ok: false, reason: 'no .stack'};
 
     const GAP = () => parseFloat(getComputedStyle(stack).getPropertyValue('--gap')) || 20;
     const MIN = () => parseFloat(getComputedStyle(stack).getPropertyValue('--min')) || 260;
 
     const cards = Array.from(stack.querySelectorAll('.card'));
-    if (!cards.length) return { ok:false, reason:'no cards' };
+    if (!cards.length) return {ok: false, reason: 'no cards'};
 
     const gap = GAP();
     const min = MIN();
@@ -32,7 +35,10 @@ function layoutScript() {
         let best = 0, bestH = Infinity;
         for (let c = 0; c <= cols - span; c++) {
             const windowH = Math.max(...H.slice(c, c + span));
-            if (windowH < bestH) { bestH = windowH; best = c; }
+            if (windowH < bestH) {
+                bestH = windowH;
+                best = c;
+            }
         }
         const left = best * (colW + gap);
         const width = span * colW + (span - 1) * gap;
@@ -43,23 +49,25 @@ function layoutScript() {
         const prevT = el.style.top;
         el.style.width = width + 'px';
         el.style.left = left + 'px';
-        el.style.top  = bestH + 'px';
+        el.style.top = bestH + 'px';
 
         const h = el.getBoundingClientRect().height;
         const newH = bestH + h + gap;
         for (let c = best; c < best + span; c++) H[c] = newH;
 
         const idx = el.getAttribute('data-i') ?? String(out.length);
-        out.push({ i: Number(idx), left, top: bestH, width });
+        out.push({i: Number(idx), left, top: bestH, width});
         // revert (not strictly needed)
-        el.style.width = prevW; el.style.left = prevL; el.style.top = prevT;
+        el.style.width = prevW;
+        el.style.left = prevL;
+        el.style.top = prevT;
     }
 
-    return { ok:true, cols, height: Math.max(...H) - gap, positions: out };
+    return {ok: true, cols, height: Math.max(...H) - gap, positions: out};
 }
 
 // tiny static server
-function serve(root, port=0){
+function serve(root, port = 0) {
     return new Promise(resolveServer => {
         const server = http.createServer(async (req, res) => {
             let urlPath = decodeURIComponent((req.url || '/').split('?')[0]);
@@ -76,7 +84,8 @@ function serve(root, port=0){
                 res.writeHead(200, {'Content-Type': type});
                 res.end(data);
             } catch {
-                res.writeHead(404); res.end('not found');
+                res.writeHead(404);
+                res.end('not found');
             }
         }).listen(port, () => resolveServer(server));
     });
@@ -96,22 +105,22 @@ function cssForBreakpoint(bp, positions, totalHeight) {
     return lines.join('\n');
 }
 
-function breakpointsFrom(min, gap, maxWidth=1600) {
+function breakpointsFrom(min, gap, maxWidth = 1600) {
     // columns change when floor((W+gap)/(min+gap)) changes
     // compute ranges for cols = 1..N
     const bps = [];
     let cols = 1;
     while (true) {
-        const minW = Math.ceil(cols*min + (cols-1)*gap);
-        const nextCols = cols+1;
-        const nextMinW = Math.ceil(nextCols*min + (nextCols-1)*gap);
+        const minW = Math.ceil(cols * min + (cols - 1) * gap);
+        const nextCols = cols + 1;
+        const nextMinW = Math.ceil(nextCols * min + (nextCols - 1) * gap);
         const maxW = nextMinW - 1;
-        bps.push({ cols, min:minW, max:maxW, label:`${cols} col` });
+        bps.push({cols, min: minW, max: maxW, label: `${cols} col`});
         if (nextMinW > maxWidth) break;
         cols = nextCols;
     }
     // last one: open-ended
-    const last = bps[bps.length-1];
+    const last = bps[bps.length - 1];
     last.max = undefined;
     last.label = `${last.cols}+ col`;
     return bps;
@@ -122,14 +131,18 @@ export async function runStaticMasonry() {
     const {port} = server.address();
     const base = `http://localhost:${port}${PAGE}`;
 
-    const browser = await puppeteer.launch({ headless: 'new' });
+    const browser = await puppeteer.launch({
+        headless: 'new',
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH, // harmless if empty
+    });
     const page = await browser.newPage();
 
     // navigate once to warm cache
-    await page.goto(base, { waitUntil: 'networkidle0' });
+    await page.goto(base, {waitUntil: 'networkidle0'});
 
     // read min/gap from computed styles
-    const { min, gap } = await page.evaluate(() => {
+    const {min, gap} = await page.evaluate(() => {
         const stack = document.querySelector('.stack');
         const cs = getComputedStyle(stack);
         return {
@@ -143,11 +156,13 @@ export async function runStaticMasonry() {
     const blocks = [];
     for (const bp of bps) {
         const width = Math.max(bp.min, 360);
-        await page.setViewport({ width, height: 1400, deviceScaleFactor: 1 });
+        await page.setViewport({width, height: 1400, deviceScaleFactor: 1});
 
         // ensure fonts/images settled
-        await page.waitForNetworkIdle({ idleTime: 200, timeout: 10000 }).catch(() => {});
-        await page.evaluate(() => document.fonts ? document.fonts.ready : null).catch(()=>{});
+        await page.waitForNetworkIdle({idleTime: 200, timeout: 10000}).catch(() => {
+        });
+        await page.evaluate(() => document.fonts ? document.fonts.ready : null).catch(() => {
+        });
 
         const res = await page.evaluate(layoutScript);
         if (!res.ok) throw new Error(`layout failed: ${res.reason}`);

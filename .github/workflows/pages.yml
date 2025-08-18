@@ -25,19 +25,15 @@ jobs:
           node-version: 20
           cache: npm
 
-      # Let Puppeteer download Chromium during npm ci
       - run: echo "PUPPETEER_SKIP_DOWNLOAD=false" >> $GITHUB_ENV
 
       - run: npm ci
-
-      # If you prefer system Chromium instead, replace the two steps above with Option B.
 
       - name: Build
         run: node build-tools/build.mjs
         env:
           NODE_ENV: production
           DEV: "false"
-          # Pass through executable path if set by puppeteer install; harmless if empty
           PUPPETEER_EXECUTABLE_PATH: ${{ env.PUPPETEER_EXECUTABLE_PATH }}
 
       - uses: actions/configure-pages@v5
