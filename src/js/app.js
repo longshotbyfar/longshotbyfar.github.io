@@ -1,6 +1,6 @@
 // SETUP DEV FLAG
 
-globalThis['__DEV__'] ??= true;
+globalThis['__DEV__'] ??= false;
 export const DEV_FLAGS = {
     devFavicon: true,
     stainHuds: false,
