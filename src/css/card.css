@@ -12,12 +12,12 @@
     --coffee-rot: -10deg;
     --coffee-scale: 1;
 
+    display: none;
     position: absolute;
     margin: 0;
     background: var(--paper);
     border: 1px solid #111;
     padding: 12px;
-    display: block;
     transform: translate(var(--card-tx), var(--card-ty)) rotate(var(--card-rot));
     box-shadow: 2px 3px 0 #0001;
     overflow: visible;

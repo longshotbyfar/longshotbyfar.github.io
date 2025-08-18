@@ -57,7 +57,10 @@ export function mountMasonry(stackSelector = '.stack') {
         stack.style.height = (Math.max(...H) - gap) + 'px';
     }
 
-    cards.forEach(el => ro.observe(el));
+    cards.forEach(el => {
+        ro.observe(el);
+        el.style.display = 'block';
+    });
     window.addEventListener('resize', layout, { passive: true });
 
     watchImages();

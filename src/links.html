@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Link Index</title>
+    <link rel="stylesheet" href="./links/css/base.css"/>
+</head>
+
+<body>
+<div class="wrap">
+    <header>
+        <h1>Link Index</h1>
+        <div class="sub">Which echoes belong?</div>
+    </header>
+    <div class="bar">
+        <div class="search">
+            <span>🔎</span>
+            <input id="q" type="search" placeholder="filter"/>
+        </div>
+        <label class="toggle"><input id="unread" type="checkbox"/> unread only <span class="stat"
+                                                                                     id="stat"></span></label>
+        <div class="kbd">[/] focus
+            <!--• [u] unread--> • [Esc] clear
+        </div>
+    </div>
+
+    <div class="layout">
+        <div class="card-wrap" data-tape>
+            <aside class="panel">
+                <h2>Categories</h2>
+                <div id="cats" class="catlist"></div>
+            </aside>
+        </div>
+        <div class="card-wrap" data-tape="c">
+            <section class="results">
+                <div class="head">
+                    <div class="sel" id="sel">All categories</div>
+                    <div class="info" id="info"></div>
+                </div>
+                <ul id="list" class="list"></ul>
+                <div id="empty" class="empty" style="display:none">Nothing matches. Try removing filters.</div>
+            </section>
+        </div>
+    </div>
+</div>
+<script type="module" src="links/js/main.js"></script>
+</body>
+
+</html>

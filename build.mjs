@@ -6,7 +6,7 @@ import { cp, mkdir, readdir, readFile, writeFile, access } from 'node:fs/promise
 import { join, basename, extname } from 'node:path';
 import process from 'process';
 // If you don't use this, remove plugin + field below.
-import frictionPlugin from './plugins/friction.mjs';
+import frictionPlugin from './build-plugins/friction.mjs';
 
 const SRC  = 'src';
 const DIST = 'dist';

@@ -1,0 +1,283 @@
+:root {
+    --cube-right: #fafaf7;
+    --ink: #161616;
+    --muted: #5a5a5a;
+    --gap: 20px;
+    --paper: #fff;
+    --edge: #111;
+    --shadow: 2px 3px 0 #0001;
+    --tape: linear-gradient(90deg, #f4efc9, #efe7b7);
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    color: var(--ink);
+    font: 15px/1.55 monospace;
+    background: var(--cube-right)
+}
+
+a {
+    color: inherit
+}
+
+.wrap {
+    max-width: 1100px;
+    margin: 32px auto 64px;
+    padding: 0 14px
+}
+
+h1 {
+    margin: 0 0 4px;
+    font-size: 20px
+}
+
+.sub {
+    color: var(--muted);
+    font-size: .92rem;
+    margin-bottom: 14px
+}
+
+/* Sticky bar */
+.bar {
+    display: grid;
+    grid-template-columns:1fr auto auto;
+    gap: 10px;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: linear-gradient(var(--cube-right), var(--cube-right));
+    padding: 10px 0;
+}
+
+/* Paper surfaces */
+:is(.panel,.results,.search,.chip,.toggle) {
+    background: var(--paper);
+    border: 1px solid var(--edge);
+    box-shadow: var(--shadow);
+}
+
+/* Controls */
+.search {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 10px
+}
+
+.search input {
+    border: 0;
+    outline: none;
+    flex: 1;
+    font: inherit;
+    background: transparent;
+    min-width: 160px
+}
+
+/* CHIP: center the text span, keep count on the right */
+.chip {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; /* left pad | label | right pad+count */
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.chip > span {
+    grid-column: 2; /* center column */
+    justify-self: center;
+    text-align: center;
+    min-width: 0; /* allow wrapping */
+}
+
+.chip .count {
+    grid-column: 3; /* right column */
+    justify-self: end;
+    white-space: nowrap;
+    opacity: .6;
+}
+
+.chip.active {
+    background: #111;
+    color: #fff
+}
+
+.toggle {
+    display: none
+}
+
+/* hidden on purpose */
+.stat, .kbd {
+    color: var(--muted);
+    font-size: .88rem
+}
+
+.kbd {
+    white-space: nowrap
+}
+
+/* Layout (gap is 0; spacing comes from .card-wrap margins) */
+.layout {
+    display: grid;
+    grid-template-columns:260px 1fr;
+    gap: 0;
+    align-items: start
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns:1fr
+    }
+}
+
+/* Card wrappers own the bleed + spacing */
+.card-wrap {
+    position: relative;
+    overflow: visible;
+    margin: calc(var(--gap) / 2)
+}
+
+.card-wrap[data-tape]::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 14px;
+    width: 64px;
+    height: 14px;
+    background: var(--tape);
+    border: 1px solid #0002;
+    box-shadow: 0 1px 0 #0002;
+    opacity: .85;
+    transform: rotate(var(--tape-rot, -1deg));
+    pointer-events: none;
+    z-index: 1;
+}
+
+.card-wrap[data-tape="r"]::after {
+    left: auto;
+    right: 14px;
+    transform: rotate(var(--tape-rot, 1deg))
+}
+
+.card-wrap[data-tape="c"]::after {
+    left: 50%;
+    transform: translateX(-50%) rotate(var(--tape-rot, -.5deg))
+}
+
+/* Panel + results */
+.panel {
+    position: relative;
+    padding: 10px
+}
+
+.results {
+    position: relative;
+    padding: 0
+}
+
+/* header+list handle their own padding */
+
+.head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-bottom: 1px dashed #1113
+}
+
+.head .sel {
+    font-weight: 700
+}
+
+.head .info {
+    margin-left: auto;
+    color: var(--muted)
+}
+
+/* Category list */
+.panel h2 {
+    margin: .2rem 0 .6rem;
+    font-size: 1rem
+}
+
+.catlist {
+    display: flex;
+    flex-direction: column;
+    gap: 8px
+}
+
+/* List */
+.list {
+    list-style: none;
+    margin: 0;
+    padding: 0
+}
+
+.row {
+    display: grid;
+    grid-template-columns:16px minmax(160px, 1fr) minmax(120px, 280px);
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px dashed #1113;
+}
+
+.row:first-child {
+    border-top: 0
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--edge)
+}
+
+.dot.unread {
+    background: #111
+}
+
+.name {
+    text-decoration: none;
+    border-bottom: 1px dotted var(--edge);
+    padding-bottom: 1px
+}
+
+.name:hover {
+    background: #111;
+    color: #fff
+}
+
+.host {
+    color: var(--muted);
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.empty {
+    padding: 24px;
+    color: var(--muted);
+    text-align: center
+}
+
+@media (max-width: 520px) {
+    .row {
+        grid-template-columns:12px 1fr
+    }
+
+    .host {
+        display: none
+    }
+}
+
+.search input:focus-visible, .name:focus-visible, .chip:focus-visible {
+    outline: 2px dotted #111;
+    outline-offset: 2px
+}

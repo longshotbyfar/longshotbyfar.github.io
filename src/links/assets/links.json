@@ -1,0 +1,814 @@
+[  
+  {
+    "link": "https://lospec.com/",
+    "name": "LOSPEC: Pixel art",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://azgaar.github.io/Fantasy-Map-Generator/",
+    "name": "Azgaar’s Fantasy Map Generator",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://en.wikipedia.org/wiki/Invisible_Cities",
+    "name": "Invisible Cities (Book)",
+    "read": false,
+    "category": "PHILOSOPHICAL / PARANOID STRUCTURES"
+  },
+  {
+    "link": "https://www.falstad.com/mathphysics.html",
+    "name": "Falstad’s Math and Physics Simulations",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "https://www.youtube.com/playlist?list=PL_2e9CafVZt2VnBV0XsdV1-y63JoXLp_K",
+    "name": "Obscure Media Playlist (YouTube)",
+    "read": false,
+    "category": "UNSETTLING RADIO"
+  },
+  {
+    "link": "http://www.textfiles.com/",
+    "name": "Textfiles Archive",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://snorpey.github.io/jpg-glitch/",
+    "name": "JPG Glitcher by Snorpey",
+    "read": false,
+    "category": "TOOLS & MISC"
+  },
+  {
+    "link": "https://tetrageddon.com/",
+    "name": "Tetrageddon Games",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://the-next.eliterature.org/collections/17",
+    "name": "The NEXT: E-Lit Collection",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://anthology.rhizome.org/",
+    "name": "Rhizome Net Art Anthology",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://red3d.com/cwr/boids/",
+    "name": "Craig Reynolds' Boids Simulation",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "https://www.pl32.com/",
+    "name": "PhotoLine Graphics Editor",
+    "read": false,
+    "category": "TOOLS & MISC"
+  },
+  {
+    "link": "https://optical.toys/",
+    "name": "Optical Toys",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://lumen-app.com/",
+    "name": "Lumen Generative Visuals",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "http://www.ccru.net/syzygy.htm",
+    "name": "CCRU: Syzygy Text",
+    "read": false,
+    "category": "PHILOSOPHICAL / PARANOID STRUCTURES"
+  },
+  {
+    "link": "http://savethesounds.info/",
+    "name": "Save the Sounds",
+    "read": false,
+    "category": "UNSETTLING RADIO"
+  },
+  {
+    "link": "https://hydra.ojack.xyz/?sketch_id=marianne_1",
+    "name": "Hydra Sketch: Marianne_1",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://codepen.io/tag/art/",
+    "name": "CodePen Tagged: Art",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "http://tom7.org/",
+    "name": "Tom7’s Experimental Projects",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "https://www.sekinoworld.com/fractal/",
+    "name": "Sekino Fractal Engine",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://www.youtube.com/watch?v=pByYIB1Vmwk",
+    "name": "Boids Simulation in Motion",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://algorithmicbotany.org/papers/",
+    "name": "Papers on Algorithmic Botany",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "https://7770801.net/",
+    "name": "Null",
+    "read": false,
+    "category": "WANDERING REALMS"
+  },
+  {
+    "link": "https://andreasgysin.com/",
+    "name": "Andreas Gysin – Generative Design",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://en.wikipedia.org/wiki/TechnoSphere_%28virtual_environment%29",
+    "name": "TechnoSphere (Wikipedia)",
+    "read": false,
+    "category": "WANDERING REALMS"
+  },
+  {
+    "link": "https://superbad.com/",
+    "name": "Superbad Net Art Classic",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://cspages.ucalgary.ca/~cjacob/Publications/GeneticLSystemProgramming.pdf",
+    "name": "Genetic L-System Programming (PDF)",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "https://oubliette.bin.sh/",
+    "name": "Oubliette Net Crypt",
+    "read": false,
+    "category": "WANDERING REALMS"
+  },
+  {
+    "link": "https://www.404pagefound.com/",
+    "name": "404 Page Found – Net Narrative",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://www.holybooks.com/wp-content/uploads/CodexSeraphinianus.pdf",
+    "name": "Codex Seraphinianus PDF",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://en.wikipedia.org/wiki/House_of_Leaves",
+    "name": "House of Leaves (Book)",
+    "read": false,
+    "category": "PHILOSOPHICAL / PARANOID STRUCTURES"
+  },
+  {
+    "link": "https://glitchartgenerator.com/",
+    "name": "Glitch Art Generator Online",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://writing.upenn.edu/library/Tzara_Dada-Manifesto_1918.pdf",
+    "name": "Tzara’s Dada Manifesto (1918)",
+    "read": false,
+    "category": "BROKEN NARRATIVES"
+  },
+  {
+    "link": "https://www.lesswrong.com/",
+    "name": "LessWrong Rationality Forum",
+    "read": false,
+    "category": "PHILOSOPHICAL / PARANOID STRUCTURES"
+  },
+  {
+    "link": "https://www.gorillasun.de/articles/",
+    "name": "Gorilla Sun – Data Weirdness",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "https://marginalia-search.com/",
+    "name": "Marginalia Indie Search Engine",
+    "read": false,
+    "category": "TOOLS & MISC"
+  },
+  {
+    "link": "https://mememanifesto.space/",
+    "name": "Meme Manifesto",
+    "read": false,
+    "category": "PHILOSOPHICAL / PARANOID STRUCTURES"
+  },
+  {
+    "link": "https://libraryofbabel.info/",
+    "name": "Library of Babel Simulation",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://www.youtube.com/watch?v=CdaPhpGG6As",
+    "name": "Conet Project: Numbers Station Sample",
+    "read": false,
+    "category": "UNSETTLING RADIO"
+  },
+  {
+    "link": "https://digitaloccultlibrary.commons.gc.cuny.edu/",
+    "name": "Digital Occult Library",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://internet-janitor.itch.io/decker",
+    "name": "Decker – Hypercard-like Interface",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://www.digitalhumanities.org/dhq/vol/9/1/000205/000205.html",
+    "name": "DHQ: Toward a Poetics of Electronic Literature",
+    "read": false,
+    "category": "BROKEN NARRATIVES"
+  },
+  {
+    "link": "https://github.com/hundredrabbits/Orca",
+    "name": "Orca Livecoding Environment",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://www.technoccult.net/",
+    "name": "Technoccult: Digital Occult Culture",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://mondrianandme.com/",
+    "name": "Mondrian and Me – Interactive Design",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://moshpro.app/#overview",
+    "name": "Mosh Pro Glitch Effects",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://priyom.org/",
+    "name": "Priyom.org – Numbers Station Research",
+    "read": false,
+    "category": "UNSETTLING RADIO"
+  },
+  {
+    "link": "https://dictionaryofobscuresorrows.com/archive",
+    "name": "Dictionary of Obscure Sorrows (Archive)",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://anthology.rhizome.org/aeda-web",
+    "name": "AEDA Web – Rhizome Net Art",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://stoney.sb.org/eno/oblique.html",
+    "name": "Brian Eno’s Oblique Strategies",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://www.nodebox.net/",
+    "name": "NodeBox Creative Coding Tool",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://newart.city/",
+    "name": "New Art City – Browser-Based Exhibitions",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://www.esotericarchives.com/",
+    "name": "Twilit Grotto: Archives of Western Esoterica",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://glitchgallery.org/",
+    "name": "Glitch Gallery",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "http://www.rinkworks.com/stupid/",
+    "name": "Stupid Customer Stories",
+    "read": false,
+    "category": "BROKEN NARRATIVES"
+  },
+  {
+    "link": "https://youtu.be/5Ka3tbbT-9E?si=qLYxWp4_XsWe_3GF",
+    "name": "Odd YouTube Clip (Uncanny Tech)",
+    "read": false,
+    "category": "UNSETTLING RADIO"
+  },
+  {
+    "link": "https://paullaffoley.net/original-journals/",
+    "name": "Paul Laffoley’s Original Journals",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://www.patatap.com/",
+    "name": "Patatap – Interactive Sound Toy",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://archive.org/details/The-Conet-Project",
+    "name": "The Conet Project (Archive.org)",
+    "read": false,
+    "category": "UNSETTLING RADIO"
+  },
+  {
+    "link": "https://xanadu.com/zigzag/",
+    "name": "Xanadu Project: ZigZag Structure",
+    "read": false,
+    "category": "BROKEN NARRATIVES"
+  },
+  {
+    "link": "https://esotericarchives.com/agrippa/agrippa4.htm",
+    "name": "Agrippa’s Occult Philosophy (Book 4)",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://restorativland.org/",
+    "name": "RestorativLand",
+    "read": false,
+    "category": "WANDERING REALMS"
+  },
+  {
+    "link": "https://hmpg.net/",
+    "name": "HMPG – Home Page Graveyard",
+    "read": false,
+    "category": "WANDERING REALMS"
+  },
+  {
+    "link": "https://cassiopaea.org/",
+    "name": "Cassiopaea Forum and Archive",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://archive.org/details/andrew.chumbleyazoetia/",
+    "name": "Andrew Chumbley – Esoteric Books Archive",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://www.ubu.com/",
+    "name": "UbuWeb – Experimental Media Archive",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://scarfolk.blogspot.com/",
+    "name": "Scarfolk Council",
+    "read": false,
+    "category": "PHILOSOPHICAL / PARANOID STRUCTURES"
+  },
+  {
+    "link": "https://photosounder.com/",
+    "name": "Photosounder – Image to Sound",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://www.hfunderground.com/board/index.php",
+    "name": "HF Underground Radio Logs",
+    "read": false,
+    "category": "UNSETTLING RADIO"
+  },
+  {
+    "link": "https://sfpc.study/",
+    "name": "School for Poetic Computation",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://archive.org/details/archiveteam_yahooanswers",
+    "name": "Yahoo Answers Archive",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://g200kg.github.io/input-knobs/",
+    "name": "G200KG Input Knobs",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://www.short-wave.info/index.php",
+    "name": "Shortwave Radio Info (DPRK)",
+    "read": false,
+    "category": "UNSETTLING RADIO"
+  },
+  {
+    "link": "https://archive.rhizome.org/",
+    "name": "Rhizome Archive",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://en.wikipedia.org/wiki/The_Center_of_the_Cyclone",
+    "name": "Center of the Cyclone (Book)",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://warmplace.ru/soft/ans/",
+    "name": "ANS Synthesizer (WarmPlace)",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "http://www.eddeaddad.net/jGnoetry/",
+    "name": "jGnoetry – Genetic Poetry Generator",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "https://paullaffoley.net/wp-content/uploads/1989_Laffoley_Symbolism-copy.pdf",
+    "name": "Paul Laffoley – Symbolism PDF",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://www.shadertoy.com/view/llXfRr",
+    "name": "ShaderToy Visual Engine: llXfRr",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://fractalforums.org/",
+    "name": "Fractal Forums",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://are.na/",
+    "name": "Are.na – Visual Research Platform",
+    "read": false,
+    "category": "TOOLS & MISC"
+  },
+  {
+    "link": "https://monoskop.org/Monoskop",
+    "name": "Monoskop – Archive of Art & Theory",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://codepen.io/tag/fractal",
+    "name": "CodePen Tagged: Fractal",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://forgottenlanguages-full.forgottenlanguages.org/search?q=warfare",
+    "name": "Forgotten Languages: Warfare Corpus",
+    "read": false,
+    "category": "PHILOSOPHICAL / PARANOID STRUCTURES"
+  },
+  {
+    "link": "https://geocities.restorativland.org/",
+    "name": "GeoCities Restorativland",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://strudel.cc/",
+    "name": "Strudel – Live Coding Tool",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://en.wikipedia.org/wiki/Chaos_magic",
+    "name": "Liber Null & Psychonaut (Book)",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://sacred-texts.com/",
+    "name": "Sacred Texts Archive",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://www.pinta-project.com/",
+    "name": "Pinta – Paint Program",
+    "read": false,
+    "category": "TOOLS & MISC"
+  },
+  {
+    "link": "https://chuck.cs.princeton.edu/",
+    "name": "ChucK Music Programming Language",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://yesterweb.org/",
+    "name": "Yesterweb Community",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://www.cameronsworld.net/",
+    "name": "Cameron’s World – GeoCities Collage",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://net-art.org/",
+    "name": "Net-Art.org",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://affinity.serif.com/en-us/photo/#buy",
+    "name": "Affinity Photo (Image Editing Tool)",
+    "read": false,
+    "category": "TOOLS & MISC"
+  },
+  {
+    "link": "https://melobytes.com/en/apps",
+    "name": "Melobytes – Generative Media Apps",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://www.metafilter.com/",
+    "name": "MetaFilter Forum",
+    "read": false,
+    "category": "TOOLS & MISC"
+  },
+  {
+    "link": "https://everything2.com/",
+    "name": "Everything2 – Collaborative Encyclopedia",
+    "read": false,
+    "category": "BROKEN NARRATIVES"
+  },
+  {
+    "link": "https://tomray.me/tierra/",
+    "name": "Tierra Artificial Life Simulation",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "https://tildeverse.org/",
+    "name": "Tildeverse Web Communities",
+    "read": false,
+    "category": "WANDERING REALMS"
+  },
+  {
+    "link": "https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations",
+    "name": "Lotka–Volterra Equations (Wikipedia)",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "https://en.wikipedia.org/wiki/Chaos_game",
+    "name": "Chaos Game (Wikipedia)",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "https://web.archive.org/web/20240303112621/https://www.ndsu.edu/pubweb/~cinichol/CreativeWriting/423/SurrealistSamples.htm",
+    "name": "Surrealist Samples for Writers",
+    "read": false,
+    "category": "BROKEN NARRATIVES"
+  },
+  {
+    "link": "https://z0r.de/6792",
+    "name": "Z0r Flashloop Archive",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://hydra.ojack.xyz/?sketch_id=eerie_ear_3",
+    "name": "Hydra Sketch: Eerie Ear 3",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://www.beepbox.co/",
+    "name": "BeepBox – Chiptune Composer",
+    "read": false,
+    "category": "TOOLS & MISC"
+  },
+  {
+    "link": "https://mightyvision.blogspot.com/",
+    "name": "Mighty Vision – Personal Tech Blog",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://neocities.org/browse",
+    "name": "Neocities Browse",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://puredata.info/",
+    "name": "Pure Data Visual Programming",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://meodai.github.io/rampensau/",
+    "name": "Rampensau – Kinetic Typography",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://archive.org/details/archiveteam_soupio?tab=collection",
+    "name": "ArchiveTeam – Soup.io Rescue",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  },
+  {
+    "link": "https://www.klingbeil.com/spear/",
+    "name": "Spear – Audio Analysis Tool",
+    "read": false,
+    "category": "FRACTAL & VISUAL ENGINES"
+  },
+  {
+    "link": "https://principiadiscordia.com/",
+    "name": "Principia Discordia",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://www.pointlesssites.com/",
+    "name": "Pointless Sites Directory",
+    "read": false,
+    "category": "WANDERING REALMS"
+  },
+  {
+    "link": "https://www.astrolog.org/labyrnth.htm",
+    "name": "Astrolog's Labyrinth",
+    "read": false,
+    "category": "WANDERING REALMS"
+  },
+  {
+    "link": "https://montalk.net/",
+    "name": "Montalk – Fringe Science & Metaphysics",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://www.photomacrography.net/",
+    "name": "Photomacrography Forum",
+    "read": false,
+    "category": "TOOLS & MISC"
+  },
+  {
+    "link": "https://boundarylanguage.psu.edu/the-zairja-a-device-a-methodology-a-force-field/",
+    "name": "The Zairja – Device and Field",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "https://vvvv.org/features/",
+    "name": "vvvv – Hybrid Visual Programming",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://sacred-texts.com/bos/bos282.htm",
+    "name": "Book of Shadows: Wiccan Ritual",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://100r.co/site/shining_sand.html",
+    "name": "Shining Sand (100r.co)",
+    "read": false,
+    "category": "WANDERING REALMS"
+  },
+  {
+    "link": "https://experiments.withgoogle.com/collection/chrome",
+    "name": "Chrome Experiments by Google",
+    "read": false,
+    "category": "EXPERIMENTAL INTERFACES"
+  },
+  {
+    "link": "https://deathgenerator.com/#gallery",
+    "name": "Death Generator – Retro Text Images",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://mackerelmediafish.com/",
+    "name": "Mackerel Media Fish",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://archive.org/details/hans-jenny-cymatics/page/n3/mode/2up",
+    "name": "Hans Jenny – Cymatics",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://www.youtube.com/watch?v=29nyH_k2NuU&list=LL&index=5",
+    "name": "Odd YouTube Entry (Uncanny Loop)",
+    "read": false,
+    "category": "UNSETTLING RADIO"
+  },
+  {
+    "link": "https://www.youtube.com/watch?v=Sj1vbbRA07g",
+    "name": "Numbers Station on YouTube",
+    "read": false,
+    "category": "UNSETTLING RADIO"
+  },
+  {
+    "link": "https://github.com/galaxykate/tracery",
+    "name": "Tracery Grammar Generator",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "https://nickm.com/",
+    "name": "Nick Montfort’s Projects",
+    "read": false,
+    "category": "PHILOSOPHICAL / PARANOID STRUCTURES"
+  },
+  {
+    "link": "https://thegodabovegod.com/",
+    "name": "The God Above God Blog",
+    "read": false,
+    "category": "ESOTERIC LIT"
+  },
+  {
+    "link": "https://arbesman.net/computationaldelights/",
+    "name": "Computational Delights – Sam Arbesman",
+    "read": false,
+    "category": "COMPUTATIONAL WEIRDNESS"
+  },
+  {
+    "link": "http://www.complexification.net",
+    "name": "Gallery of Computatuion – Jared S Tarbell",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://lhohq.info",
+    "name": "Laughing Horse Orifice HQ",
+    "read": false,
+    "category": "GLITCH & NET ART"
+  },
+  {
+    "link": "https://heavensgate.com/",
+    "name": "Heaven's Gate",
+    "read": false,
+    "category": "BROKEN NARRATIVES"
+  },
+  {
+    "link": "https://plorg.neocities.org",
+    "name": "Poorly Planned Comics",
+    "read": false,
+    "category": "BROKEN NARRATIVES"
+  },
+  {
+    "link": "https://rixc.org/en/exhibitions/",
+    "name": "RIXC Exhibitions on New Media Art",
+    "read": false,
+    "category": "OBSCURE ARCHIVES"
+  }
+]
+
+
