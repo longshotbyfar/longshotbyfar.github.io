@@ -5,8 +5,8 @@ import { load as loadHTML } from 'cheerio';
 import { cp, mkdir, readdir, readFile, writeFile, access } from 'node:fs/promises';
 import { join, basename, extname } from 'node:path';
 import process from 'process';
-// If you don't use this, remove plugin + field below.
-import frictionPlugin from './build-plugins/friction.mjs';
+import frictionPlugin from './plugins/friction.mjs';
+import {runStaticMasonry} from "./static-masonry.mjs"; // remove if not using
 
 const SRC  = 'src';
 const DIST = 'dist';
@@ -69,16 +69,17 @@ for (const htmlName of htmlFiles) {
     if ($('head').length === 0) $('html').prepend('<head></head>');
     if ($('body').length === 0) $('html').append('<body></body>');
 
-    // Fix empty data-* safely (NO wildcard selector — iterate all nodes)
+    // Fix empty data-* safely (iterate all nodes)
     $('*').each((_, el) => {
         const attrs = el.attribs || {};
         for (const [k, v] of Object.entries(attrs)) {
-            if (k.startsWith('data-') && (v == null || v === undefined)) {
-                // normalize to empty string so downstream tools don't choke
-                $(el).attr(k, '');
-            }
+            if (k.startsWith('data-') && (v == null || v === undefined)) $(el).attr(k, '');
         }
     });
+
+    // Detect masonry stack & stamp stable indexes for cards
+    const hasStack = $('.stack .card').length > 0;
+    if (hasStack) $('.stack .card').each((i, el) => $(el).attr('data-i', String(i)));
 
     // Stash first explicit LOCAL module src, ignore http(s)
     let explicitLocalSrc = null;
@@ -107,19 +108,22 @@ for (const htmlName of htmlFiles) {
         : await readCssDir(join(SRC, pageName, 'css'));
     if (css.trim()) $('head').append(`<style>${css}</style>`);
 
+    // Pre-inject link to generated masonry CSS (we'll write it later)
+    if (hasStack) {
+        $('head').append(`<link rel="stylesheet" href="masonry-${pageName}.css">`);
+    }
+
     // Decide JS entry
     const jsRel = explicitLocalSrc ?? await resolveImplicitEntry(pageName);
 
     // Re-inject the local module entry (remote scripts already remain)
-    if (jsRel) {
-        $('body').append(`<script type="module" src="${jsRel}"></script>`);
-    }
+    if (jsRel) $('body').append(`<script type="module" src="${jsRel}"></script>`);
 
     // Serialize
     let serialized = $.html();
     if (!/^<!doctype html>/i.test(serialized)) serialized = `<!doctype html>\n${serialized}`;
 
-    pages.push({ htmlName, pageName, html: serialized, jsRel });
+    pages.push({ htmlName, pageName, html: serialized, jsRel, hasStack });
 }
 
 /* ───────── bundle ESM entries (mirror src/** → dist/**) ───────── */
@@ -148,7 +152,7 @@ if (entriesAbs.length) {
         entryNames: '[dir]/[name]',
         chunkNames: 'chunks/[name]-[hash]',
         assetNames: 'assets/[name]-[hash]',
-        plugins: [ frictionPlugin() ] // remove if not needed
+        plugins: [ frictionPlugin() ] // or remove
     });
 }
 
@@ -158,7 +162,6 @@ for (const p of pages) {
         collapseWhitespace: true,
         removeComments: true,
         minifyCSS: { level: 2 },
-        // keep JS minification mild; HTML has <script type="module" src=...> only
         minifyJS: { format: { comments: false } }
     });
     await writeFile(join(DIST, p.htmlName), min, 'utf8');
@@ -171,4 +174,6 @@ for (const { pageName } of pages) {
     if (pageName !== 'index') await copyIf(join(SRC, pageName, 'assets'), join(DIST, pageName, 'assets'));
 }
 
-console.log(`✅ Built ${pages.length} page(s) (${DEV ? 'dev' : 'prod'}) → dist/** (Cheerio DOM, per-page ESM, remote assets preserved)`);
+await runStaticMasonry();
+
+console.log(`✅ Built ${pages.length} page(s) (${DEV ? 'dev' : 'prod'}) → dist/** (per-page ESM, static masonry css emitted)`);

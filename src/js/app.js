@@ -14,13 +14,12 @@ import {wireRecordingFavicon} from "./cameraFavicon.js";
 import {initWhispers} from './whisper/init.js';
 import {wireBSOD} from "./bsod.js";
 import {createWheel} from "./wheel.js";
-import {mountMasonry} from "./masonry.js";
 import {slantCards} from "./cardSlanter.js";
 
 const qs = (sel, el=document) => el.querySelector(sel);
 
 document.addEventListener('DOMContentLoaded', () => {
-    const masonry = mountMasonry('.stack');
+    // const masonry = mountMasonry('.stack');
     slantCards('.card');
     const rec = wireRecordingFavicon({blinkMs: 600});
 
