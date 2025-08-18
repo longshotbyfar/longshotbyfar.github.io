@@ -66,6 +66,8 @@ export function mountMasonry(stackSelector = '.stack') {
     watchImages();
     layout();
 
+    console.log("laid hehe")
+
     return {
         layout,
         destroy() {

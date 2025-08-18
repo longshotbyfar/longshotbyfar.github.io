@@ -192,4 +192,4 @@ try {
     console.warn('⚠️ static masonry skipped:', e?.message || e);
 }
 
-console.log(`✅ Built ${pages.length} page(s) (${DEV ? 'dev' : 'prod'}) → dist/** (per-page ESM, static masonry css emitted)`);
+console.log(`✅ Built ${pages.length} page(s) (${DEV ? 'dev' : 'prod'}) → dist/**`);

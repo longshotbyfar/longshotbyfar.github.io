@@ -1,7 +1,11 @@
 // SETUP DEV FLAG
 
-globalThis['__DEV__'] ??= false;
-
+globalThis['__DEV__'] ??= true;
+export const DEV_FLAGS = {
+    devFavicon: true,
+    stainHuds: false,
+    dynamicMasonry: true,
+}
 globalThis.log = __DEV__ ? (msg => console.log(msg)) : (() => {});
 log("VIEWING IN DEV MODE");
 
@@ -18,8 +22,16 @@ import {slantCards} from "./cardSlanter.js";
 
 const qs = (sel, el=document) => el.querySelector(sel);
 
-document.addEventListener('DOMContentLoaded', () => {
-    // const masonry = mountMasonry('.stack');
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+    if (__DEV__ && DEV_FLAGS.dynamicMasonry) {
+        await (async () => {
+            const masonry = await import("./masonryDynamic.js");
+            masonry.mountMasonry('.stack');
+            console.log(masonry.mountMasonry)
+        })();
+    }
     slantCards('.card');
     const rec = wireRecordingFavicon({blinkMs: 600});
 

@@ -1,3 +1,5 @@
+import {DEV_FLAGS} from "./app.js";
+
 function setFaviconFromCanvas(draw, size = 32) {
     const c = document.createElement('canvas');
     const s = (window.devicePixelRatio > 1 ? size * 2 : size);
@@ -41,7 +43,7 @@ export function wireRecordingFavicon({blinkMs = 700} = {}) {
     let on = false;
     let forced = false;
 
-    if (__DEV__) {
+    if (__DEV__ && DEV_FLAGS.devFavicon) {
         setFaviconFromCanvas((ctx) => {
             const S = 64;
             ctx.fillStyle = '#0f0';

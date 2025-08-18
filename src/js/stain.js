@@ -1,3 +1,5 @@
+import {DEV_FLAGS} from "./app.js";
+
 export {POINTER, spawnStains, makeStain, setWorld};
 
 // Config
@@ -120,9 +122,8 @@ const HUD = {
 
 // Stain
 class Stain {
-    constructor(x, y, {size = CFG.size, dev = false} = {}) {
+    constructor(x, y, {size = CFG.size} = {}) {
         this.size = size;
-        this.dev = dev;
         this.el = document.createElement('div');
         this.persona = Stain.makePersona();
         this.hue = pickHue(this.persona.approach);
@@ -141,7 +142,7 @@ class Stain {
         document.body.appendChild(this.el);
 
         // DEV HUD (optional)
-        this.updateHUD = this.dev ? HUD.attach(this.el) : null;
+        if (__DEV__ && DEV_FLAGS.stainHuds) this.updateHUD = HUD.attach(this.el);
 
         // local anim state
         this.phase = Math.random() * Math.PI * 2;
@@ -385,15 +386,13 @@ function sampleBoxes(n, w, h, {
 
 // Public API
 function makeStain(x, y, opts = {}) {
-    return new Stain(x, y, opts); // { size, dev }
+    return new Stain(x, y, opts);
 }
 
-function spawnStains(n = 3, {box = CFG.size, margin = 100, gap = 100, dev = false} = {}) {
+function spawnStains(n = 3, {box = CFG.size, margin = 100, gap = 100} = {}) {
     const pts = sampleBoxes(n, innerWidth, innerHeight, {box, margin, gap});
     for (const p of pts) {
-        (window.requestIdleCallback ? requestIdleCallback : f => setTimeout(f, 0))(() => makeStain(p.x, p.y, {
-            size: box,
-            dev
-        }));
+        (window.requestIdleCallback ? requestIdleCallback : f => setTimeout(f, 0))(() =>
+            makeStain(p.x, p.y, { size: box }));
     }
 }
