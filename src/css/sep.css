@@ -1,0 +1,52 @@
+.sep-scribble {
+    height: 16px; margin: 6px 0 10px;
+    background: url('data:image/svg+xml;utf8,\
+    <svg xmlns="http://www.w3.org/2000/svg" width="600" height="16" viewBox="0 0 600 16">\
+      <path d="M0 8 Q 40 2, 80 8 T 160 8 T 240 8 T 320 8 T 400 8 T 480 8 T 560 8 T 640 8" fill="none" stroke="black" stroke-opacity=".45" stroke-width="1.2" stroke-linecap="round"/>\
+      <path d="M0 10 Q 40 4, 80 10 T 160 10 T 240 10 T 320 10 T 400 10 T 480 10 T 560 10 T 640 10" fill="none" stroke="black" stroke-opacity=".18" stroke-width="1"/>\
+    </svg>') center/auto 100% no-repeat;
+}
+
+.sep-zigzag {
+    height: 16px;
+    margin: 6px 0 12px;
+    background: url('data:image/svg+xml;utf8,\
+      <svg xmlns="http://www.w3.org/2000/svg" width="600" height="16" viewBox="0 0 600 16">\
+        <path d="M0 8 L20 0 L40 16 L60 0 L80 16 L100 0 L120 16 L140 0 L160 16 L180 0 L200 16 L220 0 L240 16 L260 0 L280 16 L300 0 L320 16 L340 0 L360 16 L380 0 L400 16 L420 0 L440 16 L460 0 L480 16 L500 0 L520 16 L540 0 L560 16 L580 0 L600 16" \
+              fill="none" stroke="black" stroke-width="1.5" stroke-opacity="0.6"/>\
+      </svg>') center/auto 100% no-repeat;
+}
+
+.sep-crt {
+    height: 10px; margin: 8px 0;
+    background-image:
+            repeating-linear-gradient(to right, rgba(0,255,255,.7) 0 1px, transparent 1px 3px),
+            repeating-linear-gradient(to right, rgba(255,0,255,.5) 0 2px, transparent 2px 4px);
+    background-size: 4px 100%, 6px 100%;
+    background-repeat: repeat-x;
+}
+
+.sep-caution {
+    height: 12px; margin: 10px 0;
+    background: repeating-linear-gradient(135deg, #000 0 8px, #ff0 8px 16px);
+    background-size: 24px 100%;
+}
+
+.sep-pencil {
+    display: block; margin: 10px 0; height: 16px;
+    background-repeat: repeat-x;
+    background-image: url('data:image/svg+xml;utf8,\
+    <svg xmlns="http://www.w3.org/2000/svg" width="160" height="16" viewBox="0 0 160 16">\
+      <defs>\
+        <filter id="b" x="-20%" y="-100%" width="140%" height="300%">\
+          <feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="2" seed="7" result="n"/>\
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G"/>\
+        </filter>\
+      </defs>\
+      <path d="M0 8 C20 6, 40 10, 60 7 S100 9, 120 8 S140 7, 160 8" stroke="%23000" stroke-opacity=".6" stroke-width="2.2" fill="none" filter="url(%23b)"/>\
+      <g opacity=".25">\
+        <path d="M0 10 C18 8, 36 12, 54 9 S90 11, 120 10 S144 9, 160 10" stroke="%23000" stroke-width="3.2" fill="none" filter="url(%23b)"/>\
+      </g>\
+    </svg>');
+    background-size: 160px 16px;
+}

@@ -10,7 +10,7 @@ function ensureCtx() {
     }
 }
 
-export function playStatic({ duration=2.5, fadeOut=1.0, level=BASE_GAIN } = {}) {
+function playStatic({ duration=2.5, fadeOut=1.0, level=BASE_GAIN } = {}) {
     ensureCtx();
     const frames = ctx.sampleRate * duration;
     const buf = ctx.createBuffer(1, frames, ctx.sampleRate);
@@ -29,4 +29,8 @@ export function playStatic({ duration=2.5, fadeOut=1.0, level=BASE_GAIN } = {}) 
 
     src.start();
     src.stop(now + duration);
+}
+
+export function mountStaticOnClick(el, opts) {
+    el.addEventListener('click', () => playStatic(opts));
 }

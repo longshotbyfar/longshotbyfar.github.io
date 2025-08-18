@@ -1,0 +1,60 @@
+.stack {
+    position: relative;
+    --min: 260px;
+    --gap: 20px;
+}
+
+.card {
+    --card-tx: 0;
+    --card-ty: 0;
+    --card-rot: 0;
+    --tape-rot: -1deg;
+    --coffee-rot: -10deg;
+    --coffee-scale: 1;
+
+    position: absolute;
+    margin: 0;
+    background: var(--paper);
+    border: 1px solid #111;
+    padding: 12px;
+    display: block;
+    transform: translate(var(--card-tx), var(--card-ty)) rotate(var(--card-rot));
+    box-shadow: 2px 3px 0 #0001;
+    overflow: visible;
+}
+
+.card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+}
+
+.card h2 { margin: .2rem 0 .5rem; font-size: 1rem; }
+
+/* Tape overlays */
+.card[data-tape]::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 14px;
+    width: 64px;
+    height: 14px;
+    background: linear-gradient(90deg, #f4efc9, #efe7b7);
+    border: 1px solid #0002;
+    box-shadow: 0 1px 0 #0002;
+    opacity: .85;
+    transform: rotate(var(--tape-rot));
+    pointer-events: none;
+}
+
+.card[data-tape="r"]::after {
+    left: auto;
+    right: 14px;
+    transform: rotate(1deg);
+}
+
+.card[data-tape="c"]::after {
+    left: 50%;
+    transform: translateX(-50%) rotate(-.5deg);
+}

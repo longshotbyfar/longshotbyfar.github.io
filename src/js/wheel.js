@@ -48,8 +48,8 @@ export function createWheel(target, opts = {
         cancelAnim();
         anim = el.animate(
             [
-                { transform: `translate3d(${startX}px,0,0) rotate(0deg)` },
-                { transform: `translate3d(${endX}px,0,0) rotate(${degrees}deg)` }
+                { transform: `translate3d(${startX}px,5px,0) rotate(0deg)` },
+                { transform: `translate3d(${endX}px,5px,0) rotate(${degrees}deg)` }
             ],
             { duration, easing: 'linear', fill: 'forwards', composite: 'replace' }
         );

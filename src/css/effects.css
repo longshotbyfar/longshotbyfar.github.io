@@ -1,10 +1,22 @@
-.blur-lines p {
-    filter: blur(2px);
-    transition: filter 1s ease;
+.blur-lines p, .blur-lines h2 {
+    /* dotted mask */
+    --dot: radial-gradient(circle, #000 60%, transparent 60%);
+    -webkit-mask-image: var(--dot);
+    mask-image: var(--dot);
+    -webkit-mask-size: 4px 4px; /* dot size */
+    mask-size: 4px 4px;
+    -webkit-mask-repeat: repeat;
+    mask-repeat: repeat;
+
+    filter: blur(3px) contrast(120%); /* make edges chunkier */
+    transition: filter .6s ease, -webkit-mask-image .6s ease, mask-image .6s ease;
     margin: 0;
 }
-.blur-lines p:hover {
+
+.blur-lines p:hover, .blur-lines h2 {
     filter: none;
+    -webkit-mask-image: none;
+    mask-image: none;
 }
 
 .glow-wrapper {

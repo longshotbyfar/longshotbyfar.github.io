@@ -2,4 +2,6 @@
 node_modules/
 dist/
 .DS_Store
-/src/exclude/
+.run/
+/experiment/
+/src/cult/.idea/

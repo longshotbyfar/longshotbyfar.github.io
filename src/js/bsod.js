@@ -1,8 +1,9 @@
 export function wireBSOD({
                              ratePerClick = 0.01,
                              autoCloseAt100 = true,
-                             oncePerVisit = false,
-                             delayMs = 3000
+                             oncePerVisit = true,
+                             delayMs = 3000,
+                             progressStepMs = 100
                          } = {}) {
     let active = false;
     let trippedThisVisit = false;
@@ -43,6 +44,17 @@ export function wireBSOD({
         const pctEl = o.querySelector('.pct');
         let pct = 0;
 
+        /*
+        const iv = setInterval(() => {
+            pct++;
+            bar.style.width = pct + '%';
+            pctEl.textContent = String(pct);
+            if (pct >= 100 && autoCloseAt100) {
+                clearInterval(iv);
+                done();
+            }
+        }, onePercentMs);
+         */
         const iv = setInterval(() => {
             pct = Math.min(100, pct + (Math.random() * 9 + 3) | 0); // +3..+12
             bar.style.width = pct + '%';
@@ -51,7 +63,7 @@ export function wireBSOD({
                 clearInterval(iv);
                 done();
             }
-        }, 80);
+        }, progressStepMs);
 
         function done() {
             clearInterval(iv);
