@@ -12,7 +12,7 @@ const SERIES = [
     {key: "frontier", label: "Frontier length", fmt: v => v},
     {key: "clusters_p90", label: "Cluster size (p90)", fmt: v => v},
     {key: "loner_pct", label: "Loner %", fmt: v => v, min: 0, max: 1},
-    {key: "occupancy", label: "Occupancy", fmt: v => v, min: 0, max: 1},
+    // {key: "occupancy", label: "Occupancy", fmt: v => v, min: 0, max: 1},
 ];
 
 /* ============ State ============ */

@@ -20,9 +20,9 @@ import {slantCards} from "./cardSlanter.js";
 const qs = (sel, el=document) => el.querySelector(sel);
 
 document.addEventListener('DOMContentLoaded', () => {
+    const masonry = mountMasonry('.stack');
     slantCards('.card');
     const rec = wireRecordingFavicon({blinkMs: 600});
-    const masonry = mountMasonry('.stack');
 
     startEntropyTimer(qs('#timer'), qs('#ghost'));
     wireAsciiFlip(qs('#tableFlip'));

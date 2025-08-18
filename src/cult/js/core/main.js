@@ -120,5 +120,5 @@ function prestart(seed, ffTicks) {
 }
 
 const MASTER_SEED = "run-2025-08-10";
-const FF_TICKS = 1000;
+const FF_TICKS = 200;
 prestart(MASTER_SEED, FF_TICKS);

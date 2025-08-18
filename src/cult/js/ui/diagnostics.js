@@ -12,7 +12,7 @@ export function ensureDiagnosticsPanel(world) {
     panel.id = "diagPanel";
     panel.innerHTML = `
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
-      <label for="diagId" style="font:12px system-ui">[SPACE TO PAUSE/RESUME] Agent ID</label>
+      <label for="diagId" style="font:12px system-ui">Inspect Agent ID</label>
       <input id="diagId" type="number" min="0" step="1" style="width:80px;padding:2px 4px;" />
       <button id="diagBtn" style="padding:2px 8px;">Inspect</button>
       <span id="diagMsg" style="font:12px system-ui;color:#888;margin-left:6px;"></span>

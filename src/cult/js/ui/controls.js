@@ -91,7 +91,7 @@ export function ensureKnobPanel() {
     });
     const title = document.createElement("div");
     title.style.fontWeight = "600";
-    title.textContent = "Knobs";
+    title.textContent = "[SPACE TO PAUSE/RESUME] Knobs";
     const btn = document.createElement("button");
     btn.id = "knobCollapseBtn";
     btn.style.cssText = "font:12px system-ui;padding:2px 6px;";
