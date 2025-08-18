@@ -7,6 +7,7 @@
     "rimraf": "^6.0.1"
   },
   "scripts": {
-    "build:prod": "node build-tools/build.mjs && node -e \"const {exec}=require('child_process'); const p=process.platform; const opener=(p==='win32'?'start ':p==='darwin'?'open ':'xdg-open '); exec(opener + 'http://localhost:63342/longshotbyfar/dist/index.html')\""
+    "build:prod": "node build-tools/build.mjs && node -e \"const {exec}=require('child_process'); const p=process.platform; const opener=(p==='win32'?'start ':p==='darwin'?'open ':'xdg-open '); exec(opener + 'http://localhost:63342/longshotbyfar/dist/index.html')\"",
+    "clean": "rm -rf dist"
   }
 }

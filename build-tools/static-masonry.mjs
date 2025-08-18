@@ -1,10 +1,8 @@
-// tools/masonry-static.mjs
 import http from 'node:http';
 import {promises as fs} from 'node:fs';
 import {join, resolve} from 'node:path';
 import puppeteer from 'puppeteer';
 
-/** Runs inside the page; must be self-contained. */
 function layoutScript() {
     const stack = document.querySelector('.stack');
     if (!stack) return { ok: false, reason: 'no .stack' };
@@ -70,8 +68,6 @@ function layoutScript() {
 
         const left = best * (colW + gap);
         const width = span * colW + (span - 1) * gap;
-
-        // temporarily set width so wrapping is correct before measuring
         const prevWidth = el.style.width;
         el.style.width = width + 'px';
 
@@ -80,7 +76,6 @@ function layoutScript() {
         for (let c = best; c < best + span; c++) H[c] = newH;
 
         positions.push({ i: el.getAttribute('data-i') || '0', left, top: bestH, width });
-
         el.style.width = prevWidth;
     }
 
@@ -119,7 +114,6 @@ function serve(root, port = 0) {
     });
 }
 
-/** Emit CSS for one breakpoint */
 function cssForBreakpoint(bp, positions, totalHeight) {
     const lines = [];
     lines.push(`/* ${bp.label} (${bp.min}px–${bp.max ?? '∞'}px), cols=${bp.cols} */`);

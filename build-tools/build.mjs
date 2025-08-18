@@ -191,7 +191,15 @@ for (const {pageName} of pages) {
 }
 
 try {
-    masonryPages.forEach(async _ => await runStaticMasonry)
+    masonryPages.forEach(async p => {
+
+        try {
+            await runStaticMasonry(p);
+        } catch (e) {
+            console.error("masonry failed:", e);
+        }
+
+    });
 } catch (e) {
     console.warn('⚠️ static masonry skipped:', e?.message || e);
 }
