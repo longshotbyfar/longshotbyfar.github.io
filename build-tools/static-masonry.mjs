@@ -6,68 +6,99 @@ import puppeteer from 'puppeteer';
 
 const ROOT = resolve('dist');
 const PAGE = '/index.html';
-const EMITTED_CSS_NAME = 'masonry-static.css';
+const EMITTED_CSS_NAME = 'masonry-index.css'; // matches <link href="masonry-index.css">
 
-// same logic as your runtime (minus observers)
+/** Runs inside the page; must be self-contained. */
 function layoutScript() {
-    function clamp(a, b, x) {
-        return Math.max(a, Math.min(b, x));
-    }
-
     const stack = document.querySelector('.stack');
-    if (!stack) return {ok: false, reason: 'no .stack'};
+    if (!stack) return { ok: false, reason: 'no .stack' };
 
     const GAP = () => parseFloat(getComputedStyle(stack).getPropertyValue('--gap')) || 20;
     const MIN = () => parseFloat(getComputedStyle(stack).getPropertyValue('--min')) || 260;
 
-    const cards = Array.from(stack.querySelectorAll('.card'));
-    if (!cards.length) return {ok: false, reason: 'no cards'};
+    let cards = Array.from(stack.querySelectorAll('.card'));
+    if (!cards.length) {
+        stack.style.height = '0px';
+        return { ok: true, positions: [], height: 0 };
+    }
+
+    // Ensure stable indices for CSS emission
+    cards.forEach((el, i) => { if (!el.hasAttribute('data-i')) el.setAttribute('data-i', String(i)); });
 
     const gap = GAP();
     const min = MIN();
-    const W = stack.clientWidth;
-    const cols = Math.max(1, Math.floor((W + gap) / (min + gap)));
-    const colW = (W - (cols - 1) * gap) / cols;
-    const H = new Array(cols).fill(0);
 
-    const out = [];
-    for (const el of cards) {
-        const span = Math.min(cols, parseInt(el.dataset.span || '1', 10));
-        let best = 0, bestH = Infinity;
-        for (let c = 0; c <= cols - span; c++) {
-            const windowH = Math.max(...H.slice(c, c + span));
-            if (windowH < bestH) {
-                bestH = windowH;
-                best = c;
-            }
+    const W = stack.clientWidth;
+    const cols = Math.max(1, Math.floor((W + gap) / (min + gap))); // this WILL be 1/2/3 at the widths we drive
+    const colW = (W - (cols - 1) * gap) / cols;
+
+    const H = new Array(cols).fill(0); // column heights
+
+    // span: prefer data-col-span, fall back to legacy data-span
+    const getSpan = el => {
+        const raw = el.getAttribute('data-col-span') ?? el.getAttribute('data-span');
+        const n = Number.parseInt(raw, 10);
+        const s = Number.isFinite(n) && n > 0 ? n : 1;
+        return Math.min(cols, Math.max(1, s));
+    };
+
+    // robust height: ignore transforms; handle content-visibility:auto
+    const measure = el => {
+        const cs = getComputedStyle(el);
+        if (cs.contentVisibility === 'auto') {
+            const prev = el.style.contentVisibility;
+            el.style.contentVisibility = 'visible';
+            void el.offsetHeight;
+            const h = el.offsetHeight;
+            el.style.contentVisibility = prev || '';
+            return h;
         }
+        return el.offsetHeight;
+    };
+
+    const positions = [];
+
+    for (const el of cards) {
+        // harden against hostile CSS
+        el.style.position = 'absolute';
+        el.style.margin = '0';
+        el.style.maxWidth = 'none';
+        el.style.minWidth = '0';
+
+        const span = getSpan(el);
+
+        let best = 0, bestH = Infinity;
+
+        for (let c = 0; c <= cols - span; c++) {
+            const window = H.slice(c, c + span);
+            const windowH = Math.max(...window);
+            if (windowH < bestH) { bestH = windowH; best = c; }
+        }
+
         const left = best * (colW + gap);
         const width = span * colW + (span - 1) * gap;
 
-        // temporarily set width to measure height faithfully
-        const prevW = el.style.width;
-        const prevL = el.style.left;
-        const prevT = el.style.top;
+        // temporarily set width so wrapping is correct before measuring
+        const prevWidth = el.style.width;
         el.style.width = width + 'px';
-        el.style.left = left + 'px';
-        el.style.top = bestH + 'px';
 
-        const h = el.getBoundingClientRect().height;
+        const h = measure(el);
         const newH = bestH + h + gap;
         for (let c = best; c < best + span; c++) H[c] = newH;
 
-        const idx = el.getAttribute('data-i') ?? String(out.length);
-        out.push({i: Number(idx), left, top: bestH, width});
-        // revert (not strictly needed)
-        el.style.width = prevW;
-        el.style.left = prevL;
-        el.style.top = prevT;
+        positions.push({ i: el.getAttribute('data-i') || '0', left, top: bestH, width });
+
+        el.style.width = prevWidth;
     }
 
-    return {ok: true, cols, height: Math.max(...H) - gap, positions: out};
+    const totalH = Math.max(...H) || 0;
+    const stackH = totalH ? totalH - gap : 0;
+    stack.style.height = stackH + 'px';
+
+    return { ok: true, positions, height: stackH };
 }
 
-// tiny static server
+/** tiny static file server */
 function serve(root, port = 0) {
     return new Promise(resolveServer => {
         const server = http.createServer(async (req, res) => {
@@ -76,13 +107,17 @@ function serve(root, port = 0) {
             const filePath = join(root, urlPath);
             try {
                 const data = await fs.readFile(filePath);
-                const ext = filePath.split('.').pop().toLowerCase();
-                const type = ext === 'html' ? 'text/html'
-                    : ext === 'css' ? 'text/css'
-                        : ext === 'js' ? 'text/javascript'
-                            : ext === 'svg' ? 'image/svg+xml'
-                                : 'application/octet-stream';
-                res.writeHead(200, {'Content-Type': type});
+                const ext = (filePath.split('.').pop() || '').toLowerCase();
+                const type =
+                    ext === 'html' ? 'text/html' :
+                        ext === 'css'  ? 'text/css' :
+                            ext === 'js'   ? 'text/javascript' :
+                                ext === 'svg'  ? 'image/svg+xml' :
+                                    ext === 'png'  ? 'image/png' :
+                                        ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' :
+                                            ext === 'webp' ? 'image/webp' :
+                                                'application/octet-stream';
+                res.writeHead(200, { 'Content-Type': type });
                 res.end(data);
             } catch {
                 res.writeHead(404);
@@ -92,46 +127,40 @@ function serve(root, port = 0) {
     });
 }
 
+/** Emit CSS for one breakpoint */
 function cssForBreakpoint(bp, positions, totalHeight) {
     const lines = [];
     lines.push(`/* ${bp.label} (${bp.min}px–${bp.max ?? '∞'}px), cols=${bp.cols} */`);
-    const mq = bp.max ? `@media (min-width:${bp.min}px) and (max-width:${bp.max}px){`
+    const mq = bp.max
+        ? `@media (min-width:${bp.min}px) and (max-width:${bp.max}px){`
         : `@media (min-width:${bp.min}px){`;
     lines.push(mq);
     lines.push(`  .stack{height:${Math.round(totalHeight)}px}`);
     for (const p of positions) {
-        lines.push(`  .card[data-i="${p.i}"]{left:${p.left.toFixed(2)}px;top:${p.top.toFixed(2)}px;width:${p.width.toFixed(2)}px}`);
+        lines.push(
+            `  .card[data-i="${p.i}"]{left:${p.left.toFixed(2)}px;top:${p.top.toFixed(2)}px;width:${p.width.toFixed(2)}px}`
+        );
     }
     lines.push('}');
     return lines.join('\n');
 }
 
-function breakpointsFrom(min, gap, maxWidth = 1600) {
-    // columns change when floor((W+gap)/(min+gap)) changes
-    // compute ranges for cols = 1..N
+/** Generate 1..maxCols breakpoints exactly at the thresholds */
+function breakpointsFrom(min, gap, maxCols = 3) {
     const bps = [];
-    let cols = 1;
-    while (true) {
+    for (let cols = 1; cols <= maxCols; cols++) {
         const minW = Math.ceil(cols * min + (cols - 1) * gap);
-        const nextCols = cols + 1;
-        const nextMinW = Math.ceil(nextCols * min + (nextCols - 1) * gap);
-        const maxW = nextMinW - 1;
-        bps.push({cols, min: minW, max: maxW, label: `${cols} col`});
-        if (nextMinW > maxWidth) break;
-        cols = nextCols;
+        const nextMinW = Math.ceil((cols + 1) * min + cols * gap);
+        const maxW = cols === maxCols ? undefined : nextMinW - 1;
+        bps.push({ cols, min: minW, max: maxW, label: `${cols} col${cols > 1 ? 's' : ''}` });
     }
-    // last one: open-ended
-    const last = bps[bps.length - 1];
-    last.max = undefined;
-    last.label = `${last.cols}+ col`;
     return bps;
 }
 
 export async function runStaticMasonry() {
     const server = await serve(ROOT);
-    const {port} = server.address();
+    const { port } = server.address();
     const base = `http://localhost:${port}${PAGE}`;
-
 
     const browser = await puppeteer.launch({
         headless: true,
@@ -141,46 +170,48 @@ export async function runStaticMasonry() {
             '--disable-dev-shm-usage',
             '--disable-gpu',
             '--no-zygote',
-            '--single-process'
+            '--single-process',
         ],
     });
-    const page = await browser.newPage();
 
-    // navigate once to warm cache
-    await page.goto(base, {waitUntil: 'networkidle0'});
+    try {
+        const page = await browser.newPage();
+        await page.goto(base, { waitUntil: 'networkidle0' });
 
-    // read min/gap from computed styles
-    const {min, gap} = await page.evaluate(() => {
-        const stack = document.querySelector('.stack');
-        const cs = getComputedStyle(stack);
-        return {
-            min: parseFloat(cs.getPropertyValue('--min')) || 260,
-            gap: parseFloat(cs.getPropertyValue('--gap')) || 20
-        };
-    });
-
-    const bps = breakpointsFrom(min, gap, 2000);
-
-    const blocks = [];
-    for (const bp of bps) {
-        const width = Math.max(bp.min, 360);
-        await page.setViewport({width, height: 1400, deviceScaleFactor: 1});
-
-        // ensure fonts/images settled
-        await page.waitForNetworkIdle({idleTime: 200, timeout: 10000}).catch(() => {
-        });
-        await page.evaluate(() => document.fonts ? document.fonts.ready : null).catch(() => {
+        // Pull --min/--gap from the live page
+        const { min, gap } = await page.evaluate(() => {
+            const stack = document.querySelector('.stack');
+            if (!stack) return { min: 260, gap: 20 };
+            const cs = getComputedStyle(stack);
+            return {
+                min: parseFloat(cs.getPropertyValue('--min')) || 260,
+                gap: parseFloat(cs.getPropertyValue('--gap')) || 20,
+            };
         });
 
-        const res = await page.evaluate(layoutScript);
-        if (!res.ok) throw new Error(`layout failed: ${res.reason}`);
-        blocks.push(cssForBreakpoint(bp, res.positions, res.height));
+        const bps = breakpointsFrom(min, gap, 3); // force 1/2/3 columns
+
+        const blocks = [];
+        for (const bp of bps) {
+            // Drive viewport to a representative width for this column count
+            const width = Math.max(bp.min, 900); // 900 ensures we actually hit 3-col layout for the last block
+            await page.setViewport({ width, height: 1400, deviceScaleFactor: 1 });
+
+            // Settle fonts/images
+            await page.waitForNetworkIdle({ idleTime: 200, timeout: 10000 }).catch(() => {});
+            await page.evaluate(() => (document.fonts ? document.fonts.ready : null)).catch(() => {});
+
+            const res = await page.evaluate(layoutScript);
+            if (!res || !res.ok) throw new Error(`layout failed: ${res?.reason || 'unknown'}`);
+
+            blocks.push(cssForBreakpoint(bp, res.positions, res.height));
+        }
+
+        const outCss = `/* generated by tools/masonry-static.mjs (3 cols, data-col-span) */\n${blocks.join('\n\n')}\n`;
+        await fs.writeFile(join(ROOT, EMITTED_CSS_NAME), outCss, 'utf8');
+        console.log(`✅ wrote ${EMITTED_CSS_NAME} in dist/`);
+    } finally {
+        await browser.close();
+        server.close();
     }
-
-    await browser.close();
-    server.close();
-
-    const outCss = `/* generated by masonry-static.mjs */\n${blocks.join('\n\n')}\n`;
-    await fs.writeFile(join(ROOT, '', EMITTED_CSS_NAME), outCss, 'utf8');
-    console.log('✅ wrote css/masonry-static.css');
 }

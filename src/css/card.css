@@ -12,6 +12,7 @@
     --coffee-rot: -10deg;
     --coffee-scale: 1;
 
+    box-sizing: border-box;
     position: absolute;
     margin: 0;
     background: var(--paper);
