@@ -2,11 +2,20 @@ export function mountMasonry(stackSelector = '.stack') {
     const stack = document.querySelector(stackSelector);
     if (!stack) return { layout: () => {}, destroy: () => {} };
 
+    if (!document.getElementById('masonry-base-css')) {
+        const s = document.createElement('style');
+        s.id = 'masonry-base-css';
+        s.textContent = `.stack{position:relative}.stack>.card{position:absolute;box-sizing:border-box;margin:0;max-width:none;min-width:0}`;
+        document.head.appendChild(s);
+    }
+
     const GAP = () => parseFloat(getComputedStyle(stack).getPropertyValue('--gap')) || 20;
     const MIN = () => parseFloat(getComputedStyle(stack).getPropertyValue('--min')) || 260;
 
     let cards = Array.from(stack.querySelectorAll('.card'));
-    const ro = new ResizeObserver(layout);
+    const ro = new ResizeObserver(() => requestAnimationFrame(layout)); // match static’s “after paint” timing
+    ro.observe(stack);
+    cards.forEach(el => ro.observe(el));
 
     function watchImages() {
         for (const el of cards) {
@@ -18,6 +27,26 @@ export function mountMasonry(stackSelector = '.stack') {
             });
         }
     }
+
+    const getSpan = (el, cols) => {
+        const raw = el.getAttribute('data-col-span') ?? el.getAttribute('data-span');
+        const n = Number.parseInt(raw, 10);
+        const s = Number.isFinite(n) && n > 0 ? n : 1;
+        return Math.min(cols, Math.max(1, s));
+    };
+
+    const measure = (el) => {
+        const cs = getComputedStyle(el);
+        if (cs.contentVisibility === 'auto') {
+            const prev = el.style.contentVisibility;
+            el.style.contentVisibility = 'visible';
+            void el.offsetHeight; // force layout
+            const h = el.offsetHeight;
+            el.style.contentVisibility = prev || '';
+            return h;
+        }
+        return el.offsetHeight; // border-box, ignores transforms/pseudos
+    };
 
     function layout() {
         cards = Array.from(stack.querySelectorAll('.card'));
@@ -32,41 +61,44 @@ export function mountMasonry(stackSelector = '.stack') {
 
         const H = new Array(cols).fill(0); // column heights
 
-        for (const el of cards) {
-            const span = Math.min(cols, parseInt(el.dataset.span || '1', 10));
+        // ensure stable indices like static (data-i)
+        cards.forEach((el, i) => { if (!el.hasAttribute('data-i')) el.setAttribute('data-i', String(i)); });
 
-            // best start column = window with lowest max height
+        for (const el of cards) {
+            // inline guards vs hostile CSS (mirror static runtime)
+            el.style.position = 'absolute';
+            el.style.margin = '0';
+            el.style.maxWidth = 'none';
+            el.style.minWidth = '0';
+
+            const span = getSpan(el, cols);
+
+            // pure greedy: choose window with lowest max height (no virgin penalty)
             let best = 0, bestH = Infinity;
             for (let c = 0; c <= cols - span; c++) {
                 const windowH = Math.max(...H.slice(c, c + span));
                 if (windowH < bestH) { bestH = windowH; best = c; }
             }
 
-            const left = best * (colW + gap);
+            const left  = best * (colW + gap);
             const width = span * colW + (span - 1) * gap;
+            el.style.width = width + 'px';
+            const h = measure(el);
 
             el.style.left = left + 'px';
             el.style.top  = bestH + 'px';
-            el.style.width = width + 'px';
 
-            const h = el.getBoundingClientRect().height;
             const newH = bestH + h + gap;
             for (let c = best; c < best + span; c++) H[c] = newH;
         }
 
-        stack.style.height = (Math.max(...H) - gap) + 'px';
+        const totalH = Math.max(...H) || 0;
+        stack.style.height = (totalH ? totalH - gap : 0) + 'px';
     }
 
-    cards.forEach(el => {
-        ro.observe(el);
-        el.style.display = 'block';
-    });
-    window.addEventListener('resize', layout, { passive: true });
-
+    window.addEventListener('resize', () => requestAnimationFrame(layout), { passive: true });
     watchImages();
-    layout();
-
-    console.log("laid hehe")
+    requestAnimationFrame(layout);
 
     return {
         layout,

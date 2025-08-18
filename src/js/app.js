@@ -1,6 +1,6 @@
 // SETUP DEV FLAG
 
-globalThis['__DEV__'] ??= false;
+globalThis['__DEV__'] ??= true;
 export const DEV_FLAGS = {
     devFavicon: true,
     stainHuds: false,
@@ -22,16 +22,14 @@ import {slantCards} from "./cardSlanter.js";
 
 const qs = (sel, el=document) => el.querySelector(sel);
 
-
-
 document.addEventListener('DOMContentLoaded', async () => {
     if (__DEV__ && DEV_FLAGS.dynamicMasonry) {
-        await (async () => {
-            const masonry = await import("./masonryDynamic.js");
-            masonry.mountMasonry('.stack');
-            console.log(masonry.mountMasonry)
-        })();
+        // string indirection to avoid bundling
+        const p = "./masonryDynamic.js";
+        const masonry = await import(p);
+        masonry.mountMasonry('.stack');
     }
+
     slantCards('.card');
     const rec = wireRecordingFavicon({blinkMs: 600});
 

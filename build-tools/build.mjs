@@ -64,6 +64,7 @@ if (!htmlFiles.length) {
 }
 
 const pages = [];
+const masonryPages = [];
 for (const htmlName of htmlFiles) {
     const pageName = basename(htmlName, extname(htmlName));
     const raw = await readFile(join(SRC, htmlName), 'utf8');
@@ -89,7 +90,10 @@ for (const htmlName of htmlFiles) {
 
     // Detect masonry stack & stamp stable indexes for cards
     const hasStack = $('.stack .card').length > 0;
-    if (hasStack) $('.stack .card').each((i, el) => $(el).attr('data-i', String(i)));
+    if (hasStack) {
+        $('.stack .card').each((i, el) => $(el).attr('data-i', String(i)));
+        masonryPages.push(pageName);
+    }
 
     // Stash first explicit LOCAL module src, ignore http(s)
     let explicitLocalSrc = null;
@@ -162,7 +166,7 @@ if (entriesAbs.length) {
         entryNames: '[dir]/[name]',
         chunkNames: 'chunks/[name]-[hash]',
         assetNames: 'assets/[name]-[hash]',
-        plugins: [frictionPlugin()] // or remove
+        plugins: [frictionPlugin()]
     });
 }
 
@@ -187,7 +191,7 @@ for (const {pageName} of pages) {
 }
 
 try {
-    await runStaticMasonry();
+    masonryPages.forEach(async _ => await runStaticMasonry)
 } catch (e) {
     console.warn('⚠️ static masonry skipped:', e?.message || e);
 }
