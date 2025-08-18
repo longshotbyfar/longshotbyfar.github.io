@@ -33,7 +33,7 @@ jobs:
       # If you prefer system Chromium instead, replace the two steps above with Option B.
 
       - name: Build
-        run: node build.mjs
+        run: node build-tools/build.mjs
         env:
           NODE_ENV: production
           DEV: "false"
