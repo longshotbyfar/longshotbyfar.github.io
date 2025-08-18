@@ -17,10 +17,8 @@ const isCI = process.env.GITHUB_ACTIONS === 'true'
 
 const DEV_OVERRIDE = process.env.DEV?.toLowerCase();
 const DEV = DEV_OVERRIDE === 'true' ? true : DEV_OVERRIDE === 'false' ? false : !isCI;
-
 await mkdir(DIST, {recursive: true});
 
-/* ───────────────── helpers ───────────────── */
 const exists = async p => {
     try {
         await access(p);
@@ -56,7 +54,6 @@ async function resolveImplicitEntry(pageName) {
     return null;
 }
 
-/* ───────── parse pages with Cheerio, preserve/decide scripts ───────── */
 const htmlFiles = await listRootHtml();
 if (!htmlFiles.length) {
     console.error('No HTML files found in src/');
@@ -181,7 +178,6 @@ for (const p of pages) {
     await writeFile(join(DIST, p.htmlName), min, 'utf8');
 }
 
-/* ───────── copy assets (root + per-page) ───────── */
 const copyIf = async (from, to) => {
     if (await exists(from)) await cp(from, to, {recursive: true});
 };
@@ -190,18 +186,14 @@ for (const {pageName} of pages) {
     if (pageName !== 'index') await copyIf(join(SRC, pageName, 'assets'), join(DIST, pageName, 'assets'));
 }
 
+
 try {
-    masonryPages.forEach(async p => {
-
-        try {
-            await runStaticMasonry(p);
-        } catch (e) {
-            console.error("masonry failed:", e);
-        }
-
-    });
+    for (const pageName of masonryPages) {
+        await runStaticMasonry(pageName);
+    }
 } catch (e) {
     console.warn('⚠️ static masonry skipped:', e?.message || e);
 }
+
 
 console.log(`✅ Built ${pages.length} page(s) (${DEV ? 'dev' : 'prod'}) → dist/**`);
