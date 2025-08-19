@@ -39,7 +39,7 @@ jobs:
         run: |
           node build-tools/build.mjs
 
-      - name: Sanity: list dist
+      - name: "Sanity: list dist"
         run: |
           echo "=== DIST TREE ==="
           find dist -maxdepth 3 -type f | sort || true
@@ -47,8 +47,6 @@ jobs:
           (sed -n '1,250p' dist/index.html | grep -n "<script") || true
           echo "=== SCRIPTS in links.html ==="
           (sed -n '1,250p' dist/links.html | grep -n "<script") || true
-          echo "=== SCRIPTS in cult.html ==="
-          (sed -n '1,250p' dist/cult.html | grep -n "<script") || true
 
       - uses: actions/configure-pages@v5
 
