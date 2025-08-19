@@ -2,7 +2,14 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
-const MIN_B64_LENGTH = 2;
+const B64_HELPER = `;globalThis.__B64||(globalThis.__B64=function(s){try{return decodeURIComponent(escape(atob(s)))}catch(e){return atob(s)}});\n`;
+
+function injectHelperAfterImports(js) {
+    // grab leading run of import/export declarations (semi-terminated)
+    const m = js.match(/^(?:\s*(?:import|export)(?:(?!\n\s*(?:import|export)).)*;\s*)+/s);
+    if (m) return m[0] + B64_HELPER + js.slice(m[0].length);
+    return B64_HELPER + js;
+}
 
 export default function frictionPlugin({
                                            base64Strings = true,
@@ -29,20 +36,37 @@ export default function frictionPlugin({
             build.onEnd(async (result) => {
                 if (!result?.metafile) return;
 
-                const root = build.initialOptions.outdir || dirname(build.initialOptions.outfile || '');
-                const outputs = Object.entries(result.metafile.outputs)
-                    .filter(([file, meta]) => file.endsWith('.js') && meta.bytes > 0);
+                const outRoot =
+                    build.initialOptions.outdir ??
+                    (build.initialOptions.outfile ? dirname(build.initialOptions.outfile) : process.cwd());
 
-                for (const [outPath] of outputs) {
-                    const abs = join(root, outPath.replace(root + '/', '').replace(/^\.?\/*/, ''));
-                    let code = await safeRead(abs);
-                    if (code == null) continue;
+                // Collect JS outputs (skip sourcemaps and non-JS assets)
+                const jsOutputs = Object.keys(result.metafile.outputs)
+                    .filter(p => p.endsWith('.js'));
 
-                    if (base64Strings) code = encodeStrings(code);
-                    if (wrapEval)      code = wrapWithEval(code);
-                    if (sabotageWhitespace) code = sabotageWS(code);
+                for (const rel of jsOutputs) {
+                    const abs = join(outRoot, rel);
 
-                    await writeFile(abs, code, 'utf8');
+                    try {
+                        let code = await safeRead(abs);
+                        if (code == null) continue;
+
+                        // ---- transforms (order matters) ----
+                        if (base64Strings)       code = encodeStrings(code);      // no helper prepend here
+                        if (wrapEval)            code = wrapWithEval(code);
+                        if (sabotageWhitespace)  code = sabotageWS(code);
+
+                        // Inject __B64 helper *after* top-level import/export block, once
+                        if (!/\bglobalThis\.__B64\b/.test(code)) {
+                            code = injectHelperAfterImports(code);
+                        }
+
+                        await writeFile(abs, code, 'utf8');
+                    } catch (e) {
+                        console.error(`[friction] failed on ${rel}: ${e?.message || e}`);
+                        // Re-throw if you want the whole build to stop:
+                        // throw e;
+                    }
                 }
             });
         }
@@ -56,44 +80,26 @@ async function safeRead(p) {
 /* ---------- helpers ---------- */
 
 function encodeStrings(js) {
-    const MIN_B64_LENGTH = 2; // or import from outer scope
+    const MIN_B64_LENGTH = 2;
     let out = '', i = 0, n = js.length;
 
-    // modes
     let q = null, esc = false, sl = false, ml = false, buf = '';
+    let lastSig = null;
+    let afterImport = false;     // saw 'import'
+    let afterFrom = false;       // saw 'from'
+    let sawAssert = false;       // just saw 'assert'
+    let sawWith = false;         // just saw 'with'
+    let inImportAttrs = false;   // inside {...} following assert/with
+    let attrDepth = 0;
 
-    // context
-    let lastSig = null;                 // last significant char already emitted
-    let afterImport = false;            // we saw the keyword 'import' (possible bare import)
-    let afterFrom = false;              // we saw the keyword 'from' (next string is a module specifier)
+    const push = s => { out += s; for (let k=0;k<s.length;k++) if (!/\s/.test(s[k])) lastSig = s[k]; };
+    const peekNonWS = from => { for (let j=from;j<n;j++) if (!/\s/.test(js[j])) return js[j]; return ''; };
 
-    const push = (s) => {
-        out += s;
-        for (let k = 0; k < s.length; k++) {
-            const ch = s[k];
-            if (!/\s/.test(ch)) lastSig = ch;
-        }
-    };
-
-    const peekNonWS = (from) => {
-        for (let j = from; j < n; j++) if (!/\s/.test(js[j])) return js[j];
-        return '';
-    };
-
-    const emitString = (rawContent, quoteChar, isObjKey, isModuleSpecifier) => {
-        // Never transform ESM module specifiers: import "x"; export … from "x"; import … from "x"
-        if (isModuleSpecifier) return quoteChar + rawContent + quoteChar;
-
-        // Leave template literals with interpolation untouched
-        if (quoteChar === '`' && rawContent.includes('${')) return quoteChar + rawContent + quoteChar;
-
-        // Decode the literal safely to true string
-        let plain;
-        try { plain = JSON.parse(quoteChar + rawContent + quoteChar); }
-        catch { return quoteChar + rawContent + quoteChar; }
-
-        if (plain.length < MIN_B64_LENGTH) return quoteChar + rawContent + quoteChar;
-
+    const emitString = (raw, quote, isObjKey, isModuleSpecifier, inAttrs) => {
+        if (isModuleSpecifier || inAttrs) return quote + raw + quote;                 // skip in specifier & in import attrs
+        if (quote === '`' && raw.includes('${')) return quote + raw + quote;          // skip template with interp
+        let plain; try { plain = JSON.parse(quote + raw + quote); } catch { return quote + raw + quote; }
+        if (plain.length < MIN_B64_LENGTH) return quote + raw + quote;
         const b64 = Buffer.from(plain, 'utf8').toString('base64');
         const call = `__B64("${b64}")`;
         return isObjKey ? `[${call}]` : call;
@@ -103,67 +109,66 @@ function encodeStrings(js) {
         let j = i, id = '';
         while (j < n) {
             const ch = js[j];
-            if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch === '_' || ch === '$' || (id && ch >= '0' && ch <= '9')) {
-                id += ch; j++;
-            } else break;
+            if ((ch>='a'&&ch<='z')||(ch>='A'&&ch<='Z')||ch==='_'||ch==='$', id && ch>='0'&&ch<='9') { id += ch; j++; }
+            else break;
         }
         if (id) { push(id); i = j; }
         return id;
     };
 
     while (i < n) {
-        const ch = js[i], nx = js[i + 1];
+        const ch = js[i], nx = js[i+1];
 
-        // single-line comment
         if (sl) { push(ch); if (ch === '\n') sl = false; i++; continue; }
-        // multi-line comment
-        if (ml) { push(ch); if (ch === '*' && nx === '/') { push(nx); i += 2; ml = false; continue; } i++; continue; }
+        if (ml) { push(ch); if (ch === '*' && nx === '/') { push(nx); i+=2; ml=false; continue; } i++; continue; }
 
-        // inside string
         if (q) {
-            if (esc) { buf += ch; esc = false; i++; continue; }
-            if (ch === '\\') { buf += ch; esc = true; i++; continue; }
+            if (esc) { buf += ch; esc=false; i++; continue; }
+            if (ch === '\\') { buf += ch; esc=true; i++; continue; }
             if (ch === q) {
                 const nextSig = peekNonWS(i + 1);
-                const isObjKey = nextSig === ':' && (lastSig === '{' || lastSig === ',');
-                const isModuleSpecifier = afterFrom || (afterImport && !afterFrom); // bare import OR after 'from'
-
-                push(emitString(buf, q, isObjKey, isModuleSpecifier));
-
-                // reset module-specifier state after consuming the string
-                afterImport = false; afterFrom = false;
-
-                q = null; buf = ''; i++;
-                continue;
+                const isObjKey = !inImportAttrs && nextSig === ':' && (lastSig === '{' || lastSig === ',');
+                const isModuleSpecifier = afterFrom || (afterImport && !afterFrom);
+                push(emitString(buf, q, isObjKey, isModuleSpecifier, inImportAttrs));
+                // reset import specifier markers after the spec string
+                if (isModuleSpecifier) { afterImport = false; afterFrom = false; }
+                q = null; buf=''; i++; continue;
             }
             buf += ch; i++; continue;
         }
 
-        // start of string
-        if (ch === '"' || ch === "'" || ch === '`') { q = ch; buf = ''; i++; continue; }
+        if (ch === '"' || ch === "'" || ch === '`') { q = ch; buf=''; i++; continue; }
 
-        // comments
         if (ch === '/' && nx === '/') { push(ch); sl = true; i++; continue; }
         if (ch === '/' && nx === '*') { push(ch); ml = true; i++; continue; }
 
-        // identifiers: track 'import' / 'from'
-        if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch === '_' || ch === '$') {
+        // identifiers
+        if ((ch>='a'&&ch<='z')||(ch>='A'&&ch<='Z')||ch==='_'||ch==='$') {
             const id = readIdent();
             if (id === 'import') { afterImport = true; afterFrom = false; }
-            else if (id === 'from') { afterFrom = true; } // 'export * from "x"' or 'import … from "x"'
+            else if (id === 'from') { afterFrom = true; }
+            else if (id === 'assert') { sawAssert = true; }
+            else if (id === 'with') { sawWith = true; }
             continue;
         }
 
-        // Any non-ws token that isn't a string may appear between 'import' and the specifier.
-        // We keep afterImport=true until we actually consume the next string or hit a ';'.
-        if (ch === ';') { afterImport = false; afterFrom = false; }
+        // entering import attributes: 'assert { ... }' or 'with { ... }'
+        if ((sawAssert || sawWith) && ch === '{') {
+            inImportAttrs = true; attrDepth = 1; sawAssert = sawWith = false; push(ch); i++; continue;
+        }
+        if (inImportAttrs) {
+            push(ch);
+            if (ch === '{') attrDepth++;
+            else if (ch === '}') { attrDepth--; if (attrDepth === 0) inImportAttrs = false; }
+            i++; continue;
+        }
 
-        push(ch);
-        i++;
+        if (ch === ';') { afterImport = false; afterFrom = false; sawAssert = false; sawWith = false; }
+
+        push(ch); i++;
     }
 
-    // inject helper
-    return `function __B64(s){try{return decodeURIComponent(escape(atob(s)))}catch(e){return atob(s)}}\n` + out;
+    return out; // helper is injected later
 }
 
 function wrapWithEval(code) {

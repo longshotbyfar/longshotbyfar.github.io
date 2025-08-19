@@ -1,34 +1,50 @@
 // build.mjs
 import esbuild from 'esbuild';
-import {minify as minifyHTML} from 'html-minifier-terser';
-import {load as loadHTML} from 'cheerio';
-import {cp, mkdir, readdir, readFile, writeFile, access} from 'node:fs/promises';
-import {join, basename, extname} from 'node:path';
+import { minify as minifyHTML } from 'html-minifier-terser';
+import { load as loadHTML } from 'cheerio';
+import { cp, mkdir, readdir, readFile, writeFile, access } from 'node:fs/promises';
+import { join, basename, extname } from 'node:path';
 import process from 'process';
 import frictionPlugin from './plugins/friction.mjs';
-import {runStaticMasonry} from "./static-masonry.mjs"; // remove if not using
+import { runStaticMasonry } from './static-masonry.mjs';
 
+/* ────────────── FLAGS ────────────── */
+const IS_CI =
+    process.env.GITHUB_ACTIONS === 'true' ||
+    process.env.CI === 'true' ||
+    process.env.NODE_ENV === 'production';
+
+// Explicit check of process.env.DEV
+let DEV;
+if (process.env.DEV?.toLowerCase() === 'true') DEV = true;      // user forced dev
+else if (process.env.DEV?.toLowerCase() === 'false') DEV = false; // user forced prod
+else DEV = !IS_CI; // fallback: dev if not CI/prod
+
+const PROD = !DEV;
+
+// Feature toggles
+const ENABLE_FRICTION = PROD;          // obfuscation only in prod
+const ENABLE_STATIC_MASONRY = true;    // generate static CSS per page
+const MINIFY_HTML = true;              // ok to minify HTML
+
+// Roots
 const SRC = 'src';
 const DIST = 'dist';
 
-const isCI = process.env.GITHUB_ACTIONS === 'true'
-    || process.env.CI === 'true'
-    || process.env.NODE_ENV === 'production';
+// Esbuild define constants
+const DEFINE = {
+    __DEV__: DEV ? 'true' : 'false',
+    'process.env.NODE_ENV': JSON.stringify(DEV ? 'development' : 'production'),
+};
 
-const DEV_OVERRIDE = process.env.DEV?.toLowerCase();
-const DEV = DEV_OVERRIDE === 'true' ? true : DEV_OVERRIDE === 'false' ? false : !isCI;
-await mkdir(DIST, {recursive: true});
+/* ────────────── FS HELPERS ────────────── */
+await mkdir(DIST, { recursive: true });
 
-const exists = async p => {
-    try {
-        await access(p);
-        return true;
-    } catch {
-        return false;
-    }
+const exists = async (p) => {
+    try { await access(p); return true; } catch { return false; }
 };
 const listRootHtml = async () => (await readdir(SRC)).filter(f => f.toLowerCase().endsWith('.html'));
-const stripCssComments = css => css.replace(/\/\*[\s\S]*?\*\//g, '');
+const stripCssComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '');
 
 async function readCssDir(dir) {
     try {
@@ -48,12 +64,13 @@ async function resolveImplicitEntry(pageName) {
         for (const c of [
             `${pageName}/js/app.js`,
             `${pageName}/index.js`,
-            `${pageName}/js/${pageName}.js`
+            `${pageName}/js/${pageName}.js`,
         ]) if (await exists(join(SRC, c))) return c;
     }
     return null;
 }
 
+/* ────────────── PARSE HTML PAGES ────────────── */
 const htmlFiles = await listRootHtml();
 if (!htmlFiles.length) {
     console.error('No HTML files found in src/');
@@ -62,11 +79,11 @@ if (!htmlFiles.length) {
 
 const pages = [];
 const masonryPages = [];
+
 for (const htmlName of htmlFiles) {
     const pageName = basename(htmlName, extname(htmlName));
     const raw = await readFile(join(SRC, htmlName), 'utf8');
-
-    const $ = loadHTML(raw, {decodeEntities: false});
+    const $ = loadHTML(raw, { decodeEntities: false });
 
     // Ensure structure
     if ($('html').length === 0) {
@@ -77,7 +94,7 @@ for (const htmlName of htmlFiles) {
     if ($('head').length === 0) $('html').prepend('<head></head>');
     if ($('body').length === 0) $('html').append('<body></body>');
 
-    // Fix empty data-* safely (iterate all nodes)
+    // Fix empty data-* safely
     $('*').each((_, el) => {
         const attrs = el.attribs || {};
         for (const [k, v] of Object.entries(attrs)) {
@@ -92,16 +109,16 @@ for (const htmlName of htmlFiles) {
         masonryPages.push(pageName);
     }
 
-    // Stash first explicit LOCAL module src, ignore http(s)
-    let explicitLocalSrc = null;
+    // Collect ALL local module scripts (preserve order); leave remote alone
+    const localSrcs = [];
     $('script[src]').each((_, el) => {
         const s = $(el).attr('src')?.trim();
         if (!s) return;
-        if (/^https?:\/\//i.test(s)) return; // leave remote alone
-        if (!explicitLocalSrc) explicitLocalSrc = s.replace(/^\.\//, '');
+        if (/^https?:\/\//i.test(s)) return;       // keep CDN scripts untouched
+        localSrcs.push(s.replace(/^\.\//, ''));     // normalize leading './'
     });
 
-    // Remove ONLY local <script src> (keep remote CDNs like Chart.js)
+    // Remove ONLY local <script src> (keep remote CDNs)
     $('script[src]').each((_, el) => {
         const s = $(el).attr('src')?.trim();
         if (s && !/^https?:\/\//i.test(s)) $(el).remove();
@@ -113,87 +130,125 @@ for (const htmlName of htmlFiles) {
         if (href && !/^https?:\/\//i.test(href)) $(el).remove();
     });
 
-    // Per-page CSS inline
+    // Inline per-page CSS
     const css = pageName === 'index'
         ? await readCssDir(join(SRC, 'css'))
         : await readCssDir(join(SRC, pageName, 'css'));
     if (css.trim()) $('head').append(`<style>${css}</style>`);
 
-    // Pre-inject link to generated masonry CSS (we'll write it later)
-    if (hasStack) {
-        $('head').append(`<link rel="stylesheet" href="masonry-${pageName}.css">`);
+    // Pre-inject link to generated masonry CSS (static pass writes it later)
+    if (hasStack) $('head').append(`<link rel="stylesheet" href="masonry-${pageName}.css">`);
+
+    // If no explicit local scripts, try implicit entry
+    const implicit = localSrcs.length ? null : await resolveImplicitEntry(pageName);
+
+    // Re-inject local scripts (or implicit), preserving order
+    if (localSrcs.length) {
+        for (const s of localSrcs) $('body').append(`<script type="module" src="${s}"></script>`);
+    } else if (implicit) {
+        $('body').append(`<script type="module" src="${implicit}"></script>`);
     }
-
-    // Decide JS entry
-    const jsRel = explicitLocalSrc ?? await resolveImplicitEntry(pageName);
-
-    // Re-inject the local module entry (remote scripts already remain)
-    if (jsRel) $('body').append(`<script type="module" src="${jsRel}"></script>`);
 
     // Serialize
     let serialized = $.html();
     if (!/^<!doctype html>/i.test(serialized)) serialized = `<!doctype html>\n${serialized}`;
 
-    pages.push({htmlName, pageName, html: serialized, jsRel, hasStack});
+    // Keep list for bundling; prefer explicit list, else implicit, else empty
+    const jsRelList = localSrcs.length ? localSrcs : (implicit ? [implicit] : []);
+
+    if (!jsRelList.length) {
+        console.warn(`[build] Page "${pageName}" has no local scripts (only remote/CDN or none).`);
+    }
+
+    pages.push({ htmlName, pageName, html: serialized, jsRelList, hasStack });
 }
 
-/* ───────── bundle ESM entries (mirror src/** → dist/**) ───────── */
-const entriesAbs = [...new Set(pages.filter(p => p.jsRel).map(p => join(SRC, p.jsRel)))];
+/* ────────────── BUNDLE JS (shared chunks) ────────────── */
+const entriesAbs = [
+    ...new Set(pages.flatMap(p => p.jsRelList).map(rel => join(SRC, rel)))
+];
 
 if (entriesAbs.length) {
+    console.log('[build] Entry points:');
+    for (const e of entriesAbs) console.log('  -', e);
+
     await esbuild.build({
         entryPoints: entriesAbs,
         bundle: true,
-        splitting: true,
+        splitting: true,             // shared chunks across pages
         format: 'esm',
         platform: 'browser',
         target: 'es2018',
 
-        define: {__DEV__: DEV ? 'true' : 'false'},
-        minify: !DEV,
-        minifyIdentifiers: !DEV,
-        minifySyntax: !DEV,
-        minifyWhitespace: !DEV,
+        define: DEFINE,
+        minify: PROD,
+        minifyIdentifiers: PROD,
+        minifySyntax: PROD,
+        minifyWhitespace: PROD,
         sourcemap: DEV ? 'inline' : false,
         legalComments: 'none',
         drop: ['debugger'],
 
         outdir: DIST,
-        outbase: SRC,                 // mirror src/** → dist/**
+        outbase: SRC,                // mirror src/** → dist/**
         entryNames: '[dir]/[name]',
         chunkNames: 'chunks/[name]-[hash]',
         assetNames: 'assets/[name]-[hash]',
-        plugins: [frictionPlugin()]
+
+        plugins: ENABLE_FRICTION ? [frictionPlugin({
+            base64Strings: true,
+            injectDecoy: true,
+            wrapEval: false,
+            sabotageWhitespace: false, // keep off unless fully hardened
+        })] : [],
+        logLevel: 'info',
     });
+} else {
+    console.warn('[build] No JS entry points found.');
 }
 
-/* ───────── minify and write each HTML ───────── */
+/* ────────────── WRITE HTML ────────────── */
 for (const p of pages) {
-    const min = await minifyHTML(p.html, {
-        collapseWhitespace: true,
-        removeComments: true,
-        minifyCSS: {level: 2},
-        minifyJS: {format: {comments: false}}
-    });
-    await writeFile(join(DIST, p.htmlName), min, 'utf8');
+    try {
+        const htmlOut = MINIFY_HTML
+            ? await minifyHTML(p.html, {
+                collapseWhitespace: true,
+                removeComments: true,
+                minifyCSS: { level: 2 },
+                minifyJS: false, // esbuild handles JS
+            })
+            : p.html;
+
+        await writeFile(join(DIST, p.htmlName), htmlOut, 'utf8');
+    } catch (e) {
+        console.error(`HTML write failed for ${p.htmlName}:`, e?.message || e);
+        await writeFile(join(DIST, p.htmlName), p.html, 'utf8');
+    }
 }
 
-const copyIf = async (from, to) => {
-    if (await exists(from)) await cp(from, to, {recursive: true});
-};
+/* ────────────── ASSETS ────────────── */
+const copyIf = async (from, to) => { if (await exists(from)) await cp(from, to, { recursive: true }); };
 await copyIf(join(SRC, 'assets'), join(DIST, 'assets'));
-for (const {pageName} of pages) {
+for (const { pageName } of pages) {
     if (pageName !== 'index') await copyIf(join(SRC, pageName, 'assets'), join(DIST, pageName, 'assets'));
 }
 
+// Disable Jekyll on GH Pages (don’t let it ignore files that start with underscores)
+await writeFile(join(DIST, '.nojekyll'), '', 'utf8');
 
-try {
+/* ────────────── STATIC MASONRY ────────────── */
+if (ENABLE_STATIC_MASONRY && masonryPages.length) {
     for (const pageName of masonryPages) {
-        await runStaticMasonry(pageName);
+        try {
+            await runStaticMasonry(pageName);
+        } catch (e) {
+            console.warn(`⚠️ masonry failed on ${pageName}:`, e?.message || e);
+        }
     }
-} catch (e) {
-    console.warn('⚠️ static masonry skipped:', e?.message || e);
 }
 
-
-console.log(`✅ Built ${pages.length} page(s) (${DEV ? 'dev' : 'prod'}) → dist/**`);
+/* ────────────── SUMMARY ────────────── */
+console.log(
+    `✅ Built ${pages.length} page(s) → ${DIST}/ ** (${DEV ? 'dev' : 'prod'}) ` +
+    `[friction:${ENABLE_FRICTION ? 'on' : 'off'} · staticMasonry:${ENABLE_STATIC_MASONRY ? 'on' : 'off'}]`
+);
