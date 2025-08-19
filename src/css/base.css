@@ -51,6 +51,11 @@ h1 {
     color: var(--muted);
 }
 
+.untouchable {
+    user-select: none;
+    cursor: default;
+}
+
 @media (max-width: 720px) {
     .wide {
         grid-column: auto;

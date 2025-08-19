@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     mountStaticOnClick(qs('#static'), {duration: 2.5, fadeOut: 1.0, level: 0.05})
 
-    const whispersContainer = qs('#whispers');
-    if (whispersContainer) initWhispers(whispersContainer);
+    // const whispersContainer = qs('#whispers');
+    // if (whispersContainer) initWhispers(whispersContainer);
 
     console.warn("you are the error you came to inspect");
 });
