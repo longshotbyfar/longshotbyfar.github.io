@@ -1,17 +1,17 @@
-// main.js
-import {initWorld} from "./world.js";
-import {updateChart} from "../ui/viz.js";
-import {setEngineRandomNumberGenFactory, stepWorld} from "./engine.js";
-import {knobs} from "../config/config.js";
-import {ensureKnobPanel} from "../ui/controls.js";
-import {ensureDiagnosticsPanel, refreshDiagnosticsPanel} from "../ui/diagnostics.js";
-import {initCanvasGrid, drawGrid} from "../ui/canvas-grid.js";
-import {getSelected} from "../ui/selection.js";
-import {inBrowser, printMetrics, worldHash} from '../util/util.js';
-import {makeRandomNumberGenFactory} from "../util/rng.js";
-import {computeMetrics} from "../util/metrics.js";
-import {SEEDS} from "../config/seeds.js";
-import {ARCHIPELAGO, BORDER_WARS, FRACTAL_FRONTIER, HIVEMIND, applyPreset} from "../config/presets.js";
+// app.js
+import {initWorld} from "./core/world.js";
+import {updateChart} from "./ui/viz.js";
+import {setEngineRandomNumberGenFactory, stepWorld} from "./core/engine.js";
+import {knobs} from "./config/config.js";
+import {ensureKnobPanel} from "./ui/controls.js";
+import {ensureDiagnosticsPanel, refreshDiagnosticsPanel} from "./ui/diagnostics.js";
+import {initCanvasGrid, drawGrid} from "./ui/canvas-grid.js";
+import {getSelected} from "./ui/selection.js";
+import {inBrowser, printMetrics} from './util/util.js';
+import {makeRandomNumberGenFactory} from "./util/rng.js";
+import {computeMetrics} from "./util/metrics.js";
+import {SEEDS} from "./config/seeds.js";
+import {ARCHIPELAGO, BORDER_WARS, FRACTAL_FRONTIER, HIVEMIND, applyPreset} from "./config/presets.js";
 
 export let paused = false;
 

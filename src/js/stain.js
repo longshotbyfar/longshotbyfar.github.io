@@ -1,4 +1,4 @@
-import {DEV_FLAGS} from "./app.js";
+import {DEV_FLAGS} from "./common/init.js";
 
 export {POINTER, spawnStains, makeStain, setWorld};
 

@@ -1,38 +1,18 @@
-// SETUP DEV FLAG
-
-globalThis['__DEV__'] ??= false;
-export const DEV_FLAGS = {
-    devFavicon: true,
-    stainHuds: false,
-    dynamicMasonry: true,
-}
-globalThis.log = __DEV__ ? (msg => console.log(msg)) : (() => {});
-log("VIEWING IN DEV MODE");
-
 import {mountStaticOnClick} from './staticAudio.js';
 import {spawnStains} from './stain.js';
 import {wireObjet} from './objet.js';
 import {wireAsciiFlip} from './tableHover.js';
 import {startEntropyTimer} from './entropyTimer.js';
-import {wireRecordingFavicon} from "./cameraFavicon.js";
+import {wireRecordingFavicon} from "./common/cameraFavicon.js";
 import {initWhispers} from './whisper/init.js';
 import {wireBSOD} from "./bsod.js";
 import {createWheel} from "./wheel.js";
 import {slantCards} from "./cardSlanter.js";
 
-const qs = (sel, el=document) => el.querySelector(sel);
-
+const qs = (sel, el = document) => el.querySelector(sel);
 document.addEventListener('DOMContentLoaded', async () => {
-    if (__DEV__ && DEV_FLAGS.dynamicMasonry) {
-        // string indirection to avoid bundling
-        const p = "./masonryDynamic.js";
-        const masonry = await import(p);
-        masonry.mountMasonry('.stack');
-    }
 
     slantCards('.card');
-    const rec = wireRecordingFavicon({blinkMs: 600});
-
     startEntropyTimer(qs('#timer'), qs('#ghost'));
     wireAsciiFlip(qs('#tableFlip'));
     wireObjet(qs('#objet'));
@@ -47,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     wheel.start();
 
-    mountStaticOnClick(qs('#static'),{duration: 2.5, fadeOut: 1.0, level: 0.05})
+    mountStaticOnClick(qs('#static'), {duration: 2.5, fadeOut: 1.0, level: 0.05})
 
     const whispersContainer = qs('#whispers');
     if (whispersContainer) initWhispers(whispersContainer);

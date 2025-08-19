@@ -1,0 +1,30 @@
+body {
+    font-family: monospace;
+    background: #111;
+    color: #eee;
+}
+
+h1 {
+    text-align: center;
+}
+
+#log {
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 12px;
+}
+
+.knob-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.knob-top-row label {
+    font-size: 0.85em;
+}
+
+.knob-top-row input[type="number"] {
+    width: 50px;
+}

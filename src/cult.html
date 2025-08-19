@@ -3,42 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
-    <style>
-        body {
-            font-family: monospace;
-            background: #111;
-            color: #eee;
-        }
-
-        #log {
-            max-height: 200px;
-            overflow-y: auto;
-            font-size: 12px;
-        }
-
-        .knob-top-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2px;
-        }
-
-        .knob-top-row label {
-            font-size: 0.85em;
-        }
-
-        .knob-top-row input[type="number"] {
-            width: 50px;
-        }
-    </style>
+    <link rel="stylesheet" href="./cult/css/base.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<h1 style="text-align: center">Cult Sim</h1>
+<h1>Cult Sim</h1>
 <canvas id="gridCanvas"></canvas>
 <h2>Event Log</h2>
 <div id="log"></div>
-<script type="module" src="cult/js/core/main.js"></script>
+
+<script type="module" src="js/common/init.js"></script>
+<script type="module" src="cult/js/app.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-import {DEV_FLAGS} from "./app.js";
+import {DEV_FLAGS} from "./init.js";
 
 function setFaviconFromCanvas(draw, size = 32) {
     const c = document.createElement('canvas');
@@ -38,7 +38,7 @@ function drawREC(ctx, S, {on = true} = {}) {
     ctx.fill();
 }
 
-export function wireRecordingFavicon({blinkMs = 700} = {}) {
+export function wireRecordingFavicon({blinkMs = 600} = {}) {
     let timer = null;
     let on = false;
     let forced = false;

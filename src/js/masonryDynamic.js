@@ -1,3 +1,4 @@
+// UNUSED
 export function mountMasonry(stackSelector = '.stack') {
     const stack = document.querySelector(stackSelector);
     if (!stack) return { layout: () => {}, destroy: () => {} };

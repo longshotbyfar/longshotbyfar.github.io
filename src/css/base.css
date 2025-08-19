@@ -1,6 +1,6 @@
 :root {
-    --cube-right: #f0f0e7;  /* was f0f0e7 */
-    --cube-left: #fafaf777;  /* was f7f7f4 */
+    --cube-right: #f0f0e7; /* was f0f0e7 */
+    --cube-left: #fafaf777; /* was f7f7f4 */
     --cube-top: #fafaf7;
     --ink: #161616;
     --muted: #5a5a5a;
@@ -8,7 +8,9 @@
     --paper: #fff;
 }
 
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
 body {
     margin: 0;
@@ -17,25 +19,40 @@ body {
     height: 200vh; /* so you can scroll */
     opacity: 0.8;
     background-color: var(--cube-right);
-    background-image:
-            linear-gradient(30deg, var(--cube-top) 12%, transparent 12.5%, transparent 87%, var(--cube-top) 87.5%),
-            linear-gradient(150deg, var(--cube-top) 12%, transparent 12.5%, transparent 87%, var(--cube-top) 87.5%),
-            linear-gradient(30deg, var(--cube-top) 12%, transparent 12.5%, transparent 87%, var(--cube-top) 87.5%),
-            linear-gradient(150deg, var(--cube-top) 12%, transparent 12.5%, transparent 87%, var(--cube-top) 87.5%),
-            linear-gradient(60deg, var(--cube-left) 25%, transparent 25.5%, transparent 75%, var(--cube-left) 75%, var(--cube-left)),
-            linear-gradient(60deg, var(--cube-left) 25%, transparent 25.5%, transparent 75%, var(--cube-left) 75%, var(--cube-left));
+    background-image: linear-gradient(30deg, var(--cube-top) 12%, transparent 12.5%, transparent 87%, var(--cube-top) 87.5%),
+    linear-gradient(150deg, var(--cube-top) 12%, transparent 12.5%, transparent 87%, var(--cube-top) 87.5%),
+    linear-gradient(30deg, var(--cube-top) 12%, transparent 12.5%, transparent 87%, var(--cube-top) 87.5%),
+    linear-gradient(150deg, var(--cube-top) 12%, transparent 12.5%, transparent 87%, var(--cube-top) 87.5%),
+    linear-gradient(60deg, var(--cube-left) 25%, transparent 25.5%, transparent 75%, var(--cube-left) 75%, var(--cube-left)),
+    linear-gradient(60deg, var(--cube-left) 25%, transparent 25.5%, transparent 75%, var(--cube-left) 75%, var(--cube-left));
     background-size: 38px 67px;
     background-position: 0 0, 0 0, 19px 33px, 19px 33px, 0 0, 19px 33px;
     background-attachment: fixed;
 }
 
-.wrap { max-width: 960px; margin: 32px auto 64px; padding: 0 14px; }
+.wrap {
+    max-width: 960px;
+    margin: 32px auto 64px;
+    padding: 0 14px;
+}
 
-h1 { margin: 0 0 4px; font-size: 20px; }
-.sub { color: var(--muted); font-size: .92rem; margin-bottom: 14px; }
+h1 {
+    margin: 0 0 4px;
+    font-size: 20px;
+}
 
-.muted { color: var(--muted); }
+.sub {
+    color: var(--muted);
+    font-size: .92rem;
+    margin-bottom: 14px;
+}
+
+.muted {
+    color: var(--muted);
+}
 
 @media (max-width: 720px) {
-    .wide { grid-column: auto; }
+    .wide {
+        grid-column: auto;
+    }
 }
