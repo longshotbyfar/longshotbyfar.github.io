@@ -3,20 +3,20 @@ import {spawnStains} from './stain.js';
 import {wireObjet} from './objet.js';
 import {wireAsciiFlip} from './tableHover.js';
 import {startEntropyTimer} from './entropyTimer.js';
-import {wireRecordingFavicon} from "./common/cameraFavicon.js";
-import {initWhispers} from './whisper/init.js';
 import {wireBSOD} from "./bsod.js";
 import {createWheel} from "./wheel.js";
 import {slantCards} from "./cardSlanter.js";
+import {mountDynamicMasonry} from "./dynamicMasonry.js";
 
 const qs = (sel, el = document) => el.querySelector(sel);
 document.addEventListener('DOMContentLoaded', async () => {
+    if (__DYNAMIC_MASONRY__) mountDynamicMasonry();
 
     slantCards('.card');
     startEntropyTimer(qs('#timer'), qs('#ghost'));
     wireAsciiFlip(qs('#tableFlip'));
     wireObjet(qs('#objet'));
-    spawnStains(3, {dev: __DEV__});
+    spawnStains(3);
     wireBSOD();
 
     const wheel = createWheel('#wheel', {

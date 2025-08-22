@@ -38,7 +38,7 @@ function drawREC(ctx, S, {on = true} = {}) {
     ctx.fill();
 }
 
-export function wireRecordingFavicon({blinkMs = 600} = {}) {
+export function wireFavicon({blinkMs = 600} = {}) {
     let timer = null;
     let on = false;
     let forced = false;
